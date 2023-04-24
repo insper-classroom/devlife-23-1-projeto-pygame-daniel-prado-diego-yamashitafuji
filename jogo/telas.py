@@ -24,12 +24,12 @@ class TelaMenu:
     def atualiza(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return False
+                return -1
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
-                pass
-
-        return True
+                if self.START_x < mouse_x < self.START_x + self.START_w and self.START_y < mouse_y < self.START_y + self.START_h:
+                    return 1
+        return 0
     
 class TelaJogo:
     def __init__(self, largura_janela, altura_janela):

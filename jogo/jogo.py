@@ -11,18 +11,26 @@ class Jogo:
         self.altura_janela = 720
         self.window = pygame.display.set_mode((self.largura_janela, self.altura_janela))
 
-        self.telas = [TelaMenu(self.largura_janela,self.altura_janela)]
+        self.telas = [TelaMenu(self.largura_janela,self.altura_janela), TelaJogo(self.largura_janela, self.altura_janela)]
         self.ind_tela_atual = 0
 
 
     def roda(self):
 
-        tela_atual = self.telas[self.ind_tela_atual]
+        rodando = True
+        while rodando:
+            
+            tela_atual = self.telas[self.ind_tela_atual]
 
-        while tela_atual.atualiza():
-            tela_atual.desenha(self.window)
+            self.ind_tela_atual = tela_atual.atualiza()
 
-        pygame.quit()
+            if self.ind_tela_atual == -1:
+                rodando = False
+                pygame.quit()
+
+            else:
+                tela_atual.desenha(self.window)
+
 
 if True:
     Jogo().roda()
