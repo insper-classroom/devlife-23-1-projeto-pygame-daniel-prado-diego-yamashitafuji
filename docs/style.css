@@ -1,0 +1,32 @@
+body {
+    background-color: #d1f8d1;
+    text-align: center;
+  }
+  
+  
+  h1 {
+    font-family: 'Retro Gaming', cursive;
+  }
+
+  h2 {
+    font-family: 'Retro Gaming', cursive;
+  }
+
+  h3 {
+    font-family: 'Retro Gaming', cursive;
+  }
+  
+  p {
+    font-family: 'Retro Gaming', cursive;
+  }
+
+  video {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+  }
