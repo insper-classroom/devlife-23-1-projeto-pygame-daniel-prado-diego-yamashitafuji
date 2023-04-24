@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 import pygame
 from telas import *
 
@@ -34,4 +32,3 @@ class Jogo:
 
 if True:
     Jogo().roda()
->>>>>>> e959e18843b824656e697c4a4f3c72180d2dd2bb
