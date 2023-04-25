@@ -1,5 +1,6 @@
 import pygame
 from telas import *
+from telas import *
 
 
 class Jogo:
@@ -9,20 +10,14 @@ class Jogo:
         self.altura_janela = 720
         self.window = pygame.display.set_mode((self.largura_janela, self.altura_janela))
 
-        self.telas = [TelaMenu(self.largura_janela,self.altura_janela), TelaJogo(self.largura_janela, self.altura_janela)]
-        self.ind_tela_atual = 0
-
-
     def roda(self):
+        tela_atual = TelaMenu(self.largura_janela, self.altura_janela)
 
         rodando = True
         while rodando:
             
-            tela_atual = self.telas[self.ind_tela_atual]
-
-            self.ind_tela_atual = tela_atual.atualiza()
-
-            if self.ind_tela_atual == -1:
+            tela_atual = tela_atual.atualiza()
+            if tela_atual == 'exit':
                 rodando = False
                 pygame.quit()
 
