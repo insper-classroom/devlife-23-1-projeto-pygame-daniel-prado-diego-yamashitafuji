@@ -12,7 +12,7 @@ fps = 60
 
 window = pygame.display.set_mode((comprimento,altura))
 fundo_imagem = pygame.image.load('jogo/img/fundo.png')
-window.blit(fundo_imagem, (0,0))
+window.blit(fundo_imagem, (0,10))
 pygame.display.update()
 
 
