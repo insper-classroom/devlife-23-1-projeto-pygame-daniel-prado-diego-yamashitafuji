@@ -1,4 +1,6 @@
 import pygame
+import random
+from sprites import *
 
 class TelaMenu:
     def __init__(self, largura_janela, altura_janela):
@@ -75,8 +77,76 @@ class TelaJogo:
         self.largura_janela = largura_janela
         self.altura_janela = altura_janela
 
+<<<<<<< HEAD
         self.bloco_inquebravel = pygame.image.load('assets/bloco_inquebravel.png')
         self.bloco_quebravel = pygame.image.load('assets/bloco_quebravel.png')
 
 
+=======
+        self.blocks = pygame.sprite.Group()
+
+        self.sprite_w, self.sprite_h = 50, 50  # Tamanho horizontal e vertical em pixels das sprites, lembrando que as sprites sao quadrados
+>>>>>>> 4cb1c4a (criacao dos blocos no mapa)
     
+        self.unbreakblock_img = pygame.transform.scale(pygame.image.load('assets/blocoinquebravel.png'), (self.sprite_w, self.sprite_h))
+        self.breakblock_img = pygame.transform.scale(pygame.image.load('assets/blocoquebravel.png'), (self.sprite_w, self.sprite_h))
+
+        self.origin_x, self.origin_y = (largura_janela - self.sprite_w * 13) / 2, (altura_janela - self.sprite_h * 13) / 2
+
+        self.gera_paredes_inquebraveis()
+        
+        self.gera_paredes_quebraveis(40)  # Deve ser menor que 90
+        
+    def desenha(self, window):
+        window.fill((0,100,0))
+        self.blocks.draw(window)
+        pygame.display.update()
+
+    def atualiza(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return -1
+        return 1
+
+
+    def gera_paredes_inquebraveis(self):
+        for blocks in range(13):  # Desenha os blocos inquebraveis ao norte
+            x = self.origin_x + self.sprite_w * blocks
+
+            y = self.origin_y
+            self.blocks.add(UnbreakBlock(x, y, self.unbreakblock_img))
+
+        for blocks in range(1, 12):  # ... ao oeste
+            x = self.origin_x
+            y = self.origin_y + self.sprite_h * blocks
+
+            self.blocks.add(UnbreakBlock(x, y, self.unbreakblock_img))
+
+        for blocks in range(1, 12):  # ... ao leste
+            x = self.origin_x + self.sprite_w * 12
+            y = self.origin_y + self.sprite_h * blocks
+
+            self.blocks.add(UnbreakBlock(x, y, self.unbreakblock_img))
+        
+        for blocks in range(13):  # ... ao sul
+            x = self.origin_x + self.sprite_w * blocks
+
+            y = self.origin_y + self.sprite_h * 12
+            self.blocks.add(UnbreakBlock(x, y ,self.unbreakblock_img))
+
+        for y in range(2, 11, 2):
+            for x in range(2, 11, 2):
+                self.blocks.add(UnbreakBlock(self.origin_x + x * self.sprite_w, self.origin_y + y * self.sprite_h, self.unbreakblock_img))
+
+
+    def gera_paredes_quebraveis(self, n_paredes):
+        for blocks in range(n_paredes):
+            bool = True
+            while bool:
+                x_unit = random.randint(1, 11)
+                y_unit = random.randint(1, 11)
+                block = BreakBlock(self.origin_x + x_unit * self.sprite_w, self.origin_y + y_unit * self.sprite_h, self.breakblock_img)
+
+                if len(pygame.sprite.spritecollide(block, self.blocks, False)) == 0:
+                    bool = False
+            self.blocks.add(block)
