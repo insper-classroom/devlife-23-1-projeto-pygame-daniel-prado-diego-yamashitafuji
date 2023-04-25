@@ -77,16 +77,13 @@ class TelaJogo:
         self.largura_janela = largura_janela
         self.altura_janela = altura_janela
 
-<<<<<<< HEAD
         self.bloco_inquebravel = pygame.image.load('assets/bloco_inquebravel.png')
         self.bloco_quebravel = pygame.image.load('assets/bloco_quebravel.png')
 
 
-=======
         self.blocks = pygame.sprite.Group()
 
         self.sprite_w, self.sprite_h = 50, 50  # Tamanho horizontal e vertical em pixels das sprites, lembrando que as sprites sao quadrados
->>>>>>> 4cb1c4a (criacao dos blocos no mapa)
     
         self.unbreakblock_img = pygame.transform.scale(pygame.image.load('assets/blocoinquebravel.png'), (self.sprite_w, self.sprite_h))
         self.breakblock_img = pygame.transform.scale(pygame.image.load('assets/blocoquebravel.png'), (self.sprite_w, self.sprite_h))
