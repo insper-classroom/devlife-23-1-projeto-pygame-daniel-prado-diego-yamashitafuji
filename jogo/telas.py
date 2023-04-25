@@ -46,39 +46,39 @@ class TelaMenu:
         mouse_point = pygame.Rect(mouse_x, mouse_y, 1, 1)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return -1
+                return 'exit'
     
             if mouse_point.colliderect(self.rect_BATTLE):
-                self.BATTLE = pygame.font.Font(self.font, 70).render('BATTLE MODE', True, 		(255, 255, 0))
+                self.BATTLE = pygame.font.Font(self.font, 70).render('BATTLE MODE', True, (255, 255, 0))
             if not mouse_point.colliderect(self.rect_BATTLE):
-                self.BATTLE = pygame.font.Font(self.font, 60).render('BATTLE MODE', True, 	(255, 140, 0))
+                self.BATTLE = pygame.font.Font(self.font, 60).render('BATTLE MODE', True, (255, 140, 0))
             if mouse_point.colliderect(self.rect_CREDITS):
-                self.CREDITS = pygame.font.Font(self.font, 70).render('CREDITS', True, 	(255, 255, 0))
+                self.CREDITS = pygame.font.Font(self.font, 70).render('CREDITS', True, (255, 255, 0))
             if not mouse_point.colliderect(self.rect_CREDITS):
-                self.CREDITS = pygame.font.Font(self.font, 60).render('CREDITS', True, 	(255, 140, 0))
+                self.CREDITS = pygame.font.Font(self.font, 60).render('CREDITS', True, (255, 140, 0))
             if mouse_point.colliderect(self.rect_EXIT):
-                self.EXIT = pygame.font.Font(self.font, 70).render('EXIT', True, 	(255, 255, 0))
+                self.EXIT = pygame.font.Font(self.font, 70).render('EXIT', True, (255, 255, 0))
             if not mouse_point.colliderect(self.rect_EXIT):
-                self.EXIT = pygame.font.Font(self.font, 60).render('EXIT', True, 	(255, 140, 0))
+                self.EXIT = pygame.font.Font(self.font, 60).render('EXIT', True, (255, 140, 0))
             
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 if mouse_point.colliderect(self.rect_BATTLE):
                     som_inicial.play()
-                    #return 1
+                    return TelaJogo(self.largura_janela, self.altura_janela)
                 if mouse_point.colliderect(self.rect_CREDITS):
                     som_inicial.play()
-                    #return 2
+                    #return TelaCredito
                 if mouse_point.colliderect(self.rect_EXIT):
-                    return -1
-        return 0
+                    return 'exit'
+        return self
     
 class TelaJogo:
     def __init__(self, largura_janela, altura_janela):
         self.largura_janela = largura_janela
         self.altura_janela = altura_janela
 
-        self.bloco_inquebravel = pygame.image.load('assets/bloco_inquebravel.png')
-        self.bloco_quebravel = pygame.image.load('assets/bloco_quebravel.png')
+        self.bloco_inquebravel = pygame.image.load('assets/blocoinquebravel.png')
+        self.bloco_quebravel = pygame.image.load('assets/blocoquebravel.png')
 
 
         self.blocks = pygame.sprite.Group()
@@ -102,8 +102,8 @@ class TelaJogo:
     def atualiza(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return -1
-        return 1
+                return 'exit'
+        return self
 
 
     def gera_paredes_inquebraveis(self):
