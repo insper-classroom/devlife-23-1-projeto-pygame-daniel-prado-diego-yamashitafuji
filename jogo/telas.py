@@ -4,12 +4,15 @@ from sprites import *
 
 class TelaMenu:
     def __init__(self, largura_janela, altura_janela):
+        self.largura_tela = 800
+        self.altura_tela = 600
+
         self.largura_janela = largura_janela
         self.altura_janela = altura_janela
 
         self.TITLE = pygame.image.load('assets/bomber_title.png')
         self.TITLE_w, self.TITLE_h = self.TITLE.get_size()
-        self.TITLE_x, self.TITLE_y = ((self.largura_janela - self.TITLE_w) / 2, 0)  
+        self.TITLE_x, self.TITLE_y = ((self.largura_janela - self.TITLE_w) / 2, 0)    
 
         self.font = 'jogo/img/fonte.ttf'
 
@@ -62,9 +65,6 @@ class TelaMenu:
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 if mouse_point.colliderect(self.rect_BATTLE):
                     som_inicial.play()
-                    return 1
-                if mouse_point.colliderect(self.rect_CREDITS):
-                    som_inicial.play()
                     return TelaJogo(self.largura_janela, self.altura_janela)
                 if mouse_point.colliderect(self.rect_CREDITS):
                     som_inicial.play()
@@ -77,27 +77,35 @@ class TelaJogo:
     def __init__(self, largura_janela, altura_janela):
         self.largura_janela = largura_janela
         self.altura_janela = altura_janela
+        
+        self.largura_tela = 800
+        self.altura_tela = 600
+
 
         self.bloco_inquebravel = pygame.image.load('assets/blocoinquebravel.png')
         self.bloco_quebravel = pygame.image.load('assets/blocoquebravel.png')
 
 
         self.blocks = pygame.sprite.Group()
+        self.players = pygame.sprite.Group()
 
-        self.sprite_w, self.sprite_h = 50, 50  # Tamanho horizontal e vertical em pixels das sprites, lembrando que as sprites sao quadrados
+        self.sprite_w, self.sprite_h = 50, 50   # Tamanho horizontal e vertical em pixels das sprites, lembrando que as sprites sao quadrados
     
         self.unbreakblock_img = pygame.transform.scale(pygame.image.load('assets/blocoinquebravel.png'), (self.sprite_w, self.sprite_h))
         self.breakblock_img = pygame.transform.scale(pygame.image.load('assets/blocoquebravel.png'), (self.sprite_w, self.sprite_h))
 
-        self.origin_x, self.origin_y = (largura_janela - self.sprite_w * 13) / 2, (altura_janela - self.sprite_h * 13) / 2
+        self.origin_x, self.origin_y = (self.largura_tela - self.sprite_w * 13) / 2, (self.altura_janela - self.sprite_h * 13) / 2
 
         self.gera_paredes_inquebraveis()
         
-        self.gera_paredes_quebraveis(40)  # Deve ser menor que 90
+        self.gera_paredes_quebraveis(90)  # Deve ser menor que 90
+
+        self.gera_jogadores()
         
     def desenha(self, window):
         window.fill((0,100,0))
         self.blocks.draw(window)
+
         pygame.display.update()
 
     def atualiza(self):
@@ -110,25 +118,21 @@ class TelaJogo:
     def gera_paredes_inquebraveis(self):
         for blocks in range(13):  # Desenha os blocos inquebraveis ao norte
             x = self.origin_x + self.sprite_w * blocks
-
             y = self.origin_y
             self.blocks.add(UnbreakBlock(x, y, self.unbreakblock_img))
 
         for blocks in range(1, 12):  # ... ao oeste
             x = self.origin_x
             y = self.origin_y + self.sprite_h * blocks
-
             self.blocks.add(UnbreakBlock(x, y, self.unbreakblock_img))
 
         for blocks in range(1, 12):  # ... ao leste
             x = self.origin_x + self.sprite_w * 12
             y = self.origin_y + self.sprite_h * blocks
-
             self.blocks.add(UnbreakBlock(x, y, self.unbreakblock_img))
         
         for blocks in range(13):  # ... ao sul
             x = self.origin_x + self.sprite_w * blocks
-
             y = self.origin_y + self.sprite_h * 12
             self.blocks.add(UnbreakBlock(x, y ,self.unbreakblock_img))
 
@@ -142,12 +146,38 @@ class TelaJogo:
             bool = True
             while bool:
                 x_unit = random.randint(1, 11)
-                y_unit = random.randint(1, 11)
+                if x_unit == 1:
+                    y_unit = random.randint(3, 11)
+                elif x_unit == 2:
+                    y_unit = random.randint(2, 11)
+                elif x_unit == 10:
+                    y_unit = random.randint(1, 10)
+                elif x_unit == 11:
+                    y_unit = random.randint(1, 9)
+                else:
+                    y_unit = random.randint(1, 11)
+
                 block = BreakBlock(self.origin_x + x_unit * self.sprite_w, self.origin_y + y_unit * self.sprite_h, self.breakblock_img)
 
                 if len(pygame.sprite.spritecollide(block, self.blocks, False)) == 0:
                     bool = False
             self.blocks.add(block)
+
+    def gera_jogadores(self):
+        jogador_um_img = {
+            'norte':,
+            'oeste':,
+            'sul':,
+            'leste':,
+            'morte',
+        }
+
+
+        self.player_um = PlayerUm(self.origin_x + self.sprite_w, self.origin_y + self.sprite_h)
+        self.players.add(self.player_um)
+
+        self.player_dois = PlayerDois(self.origin_x + self.sprite_w * 11, self.origin_y + self.sprite_h * 11)
+        self.players.add(self.player_dois)
 
 class TelasCredito:
     def __init__(self, largura_janela, altura_janela):
