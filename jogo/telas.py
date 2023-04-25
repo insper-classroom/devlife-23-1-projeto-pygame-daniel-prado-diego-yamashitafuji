@@ -16,17 +16,15 @@ class TelaMenu:
         self.BATTLE = pygame.font.Font(self.font, 60).render('BATTLE MODE', True, 	(255, 140, 0))
         self.CREDITS = pygame.font.Font(self.font, 60).render('CREDITS', True, 	(255, 140, 0))
         self.EXIT = pygame.font.Font(self.font, 60).render('EXIT', True, 	(255, 140, 0))
-        #self.BATTLE_w, self.BATTLE_h = self.BATTLE.get_size()
+        
         self.rect_BATTLE = self.BATTLE.get_rect()
         self.rect_BATTLE.x = 300
         self.rect_BATTLE.y = 360
-        #self.BATTLE_x, self.BATTLE_y = 300 , self.altura_janela / 2
-        #self.CREDITS_w, self.CREDITS_h = self.CREDITS.get_size()
+        
         self.rect_CREDITS = self.CREDITS.get_rect()
         self.rect_CREDITS.x = 300
         self.rect_CREDITS.y = 460
-        #self.EXIT_w, self.EXIT_h = self.EXIT.get_size()
-        #self.EXIT_x, self.EXIT_y = 300, 200 + self.altura_janela / 2
+        
         self.rect_EXIT = self.EXIT.get_rect()
         self.rect_EXIT.x = 300
         self.rect_EXIT.y = 560
@@ -64,10 +62,10 @@ class TelaMenu:
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 if mouse_point.colliderect(self.rect_BATTLE):
                     som_inicial.play()
-                    #return 1
+                    return 1
                 if mouse_point.colliderect(self.rect_CREDITS):
                     som_inicial.play()
-                    #return 2
+                    return 2
                 if mouse_point.colliderect(self.rect_EXIT):
                     return -1
         return 0
@@ -77,8 +75,8 @@ class TelaJogo:
         self.largura_janela = largura_janela
         self.altura_janela = altura_janela
 
-        self.bloco_inquebravel = pygame.image.load('assets/bloco_inquebravel.png')
-        self.bloco_quebravel = pygame.image.load('assets/bloco_quebravel.png')
+        self.bloco_inquebravel = pygame.image.load('assets/blocoinquebravel.png')
+        self.bloco_quebravel = pygame.image.load('assets/blocoquebravel.png')
 
 
         self.blocks = pygame.sprite.Group()
@@ -147,3 +145,26 @@ class TelaJogo:
                 if len(pygame.sprite.spritecollide(block, self.blocks, False)) == 0:
                     bool = False
             self.blocks.add(block)
+
+class TelasCredito:
+    def __init__(self, largura_janela, altura_janela):
+        self.largura_janela = largura_janela
+        self.altura_janela = altura_janela
+
+        self.IMAGEM_FUNDO = pygame.image.load('assets/img/bomberman_credits.png')
+
+        self.font = 'jogo/img/fonte.ttf'
+
+        self.NOMES = pygame.font.Font(self.font, 60).render('BATTLE MODE', True, 	(255, 140, 0))
+
+
+    def desenha(self, window):
+        window.fill((0, 0, 255))
+        window.blit(self.IMAGEM_FUNDO, (0,0))
+
+
+
+
+
+    #def atualiza(self):
+    
