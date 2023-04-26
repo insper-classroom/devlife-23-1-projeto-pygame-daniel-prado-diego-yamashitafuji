@@ -12,7 +12,6 @@ class Jogo:
 
     def roda(self):
         tela_atual = TelaMenu(self.largura_janela, self.altura_janela)
-
         rodando = True
         while rodando:
             
