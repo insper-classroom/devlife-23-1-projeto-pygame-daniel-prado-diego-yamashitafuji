@@ -4,9 +4,6 @@ from sprites import *
 
 class TelaMenu:
     def __init__(self, largura_janela, altura_janela):
-        self.largura_tela = 800
-        self.altura_tela = 600
-
         self.largura_janela = largura_janela
         self.altura_janela = altura_janela
 
@@ -87,7 +84,7 @@ class TelaJogo:
 
         self.blocks = pygame.sprite.Group()
         self.players = pygame.sprite.Group()
-        self.sprite_w, self.sprite_h = 50, 50   # Tamanho horizontal e vertical em pixels das sprites, lembrando que as sprites sao quadrados
+        self.sprite_w, self.sprite_h = 55, 50   # Tamanho horizontal e vertical em pixels das sprites, lembrando que as sprites sao quadrados
     
         self.unbreakblock = pygame.transform.scale(pygame.image.load('assets/blocoinquebravel.png'), (self.sprite_w, self.sprite_h))
         self.breakblock = pygame.transform.scale(pygame.image.load('assets/blocoquebravel.png'), (self.sprite_w, self.sprite_h))
@@ -141,27 +138,23 @@ class TelaJogo:
 
 
     def gera_paredes_inquebraveis(self, n_inside_blocks_x, n_inside_blocks_y):
-    #    for blocks in range(3 + 2 * n_inside_blocks_x):  # Desenha os blocos inquebraveis ao norte
-    #        x = self.origin_x + self.sprite_w * blocks
-    #        y = self.origin_y
-    #        self.blocks.add(UnbreakBlock(x, y, self.unbreakblock))#
-
-    #    for blocks in range(1, 2 + 2 * n_inside_blocks_y):  # ... ao oeste
-    #        x = self.origin_x
-    #        y = self.origin_y + self.sprite_h * blocks
-    #        self.blocks.add(UnbreakBlock(x, y, self.unbreakblock))#
-
-    #    for blocks in range(1, 2 + 2 * n_inside_blocks_y):  # ... ao leste
-    #        x = self.origin_x + self.sprite_w * (n_inside_blocks_x * 2 + 2)
-    #        y = self.origin_y + self.sprite_h * blocks
-    #        self.blocks.add(UnbreakBlock(x, y, self.unbreakblock))
-    #    
-    #    for blocks in range(3 + 2 * n_inside_blocks_x):  # ... ao sul
-    #        x = self.origin_x + self.sprite_w * blocks
-    #        y = self.origin_y + self.sprite_h * (n_inside_blocks_y * 2 + 2)
-    #        self.blocks.add(UnbreakBlock(x, y, self.unbreakblock))
-
-        for y in range(2, 1 + n_inside_blocks_y * 2, 2):
+        for blocks in range(3 + 2 * n_inside_blocks_x):  # Desenha os blocos inquebraveis ao norte
+            x = self.origin_x + self.sprite_w * blocks
+            y = self.origin_y
+            self.blocks.add(UnbreakBlock(x, y, self.unbreakblock))#
+        for blocks in range(1, 2 + 2 * n_inside_blocks_y):  # ... ao oeste
+            x = self.origin_x
+            y = self.origin_y + self.sprite_h * blocks
+            self.blocks.add(UnbreakBlock(x, y, self.unbreakblock))#
+        for blocks in range(1, 2 + 2 * n_inside_blocks_y):  # ... ao leste
+            x = self.origin_x + self.sprite_w * (n_inside_blocks_x * 2 + 2)
+            y = self.origin_y + self.sprite_h * blocks
+            self.blocks.add(UnbreakBlock(x, y, self.unbreakblock))
+        for blocks in range(3 + 2 * n_inside_blocks_x):  # ... ao sul
+            x = self.origin_x + self.sprite_w * blocks
+            y = self.origin_y + self.sprite_h * (n_inside_blocks_y * 2 + 2)
+            self.blocks.add(UnbreakBlock(x, y, self.unbreakblock))  
+        for y in range(2, 1 + n_inside_blocks_y * 2, 2):  # ... Dentro do mapa
             for x in range(2, 1 + n_inside_blocks_x * 2, 2):
                 self.blocks.add(UnbreakBlock(self.origin_x + x * self.sprite_w, self.origin_y + y * self.sprite_h, self.unbreakblock))
 
@@ -195,6 +188,7 @@ class TelaJogo:
 
         self.player_dois = Player(self.origin_x + self.sprite_w * 13, self.origin_y + self.sprite_h * 11, self.unbreakblock)
         self.players.add(self.player_dois)
+        
 
 class TelasCredito:
     def __init__(self, largura_janela, altura_janela):
