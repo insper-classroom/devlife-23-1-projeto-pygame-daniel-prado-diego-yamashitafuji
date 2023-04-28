@@ -54,3 +54,11 @@ body {
 .border {
   border-right: 1px solid black;
 }
+
+footer {
+  width: 100%;
+  padding-top: 5px;
+  height: 222PX;
+  background-color: #5b45cb
+}
+
