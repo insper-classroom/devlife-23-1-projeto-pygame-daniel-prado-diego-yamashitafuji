@@ -1,15 +1,13 @@
 body {
-    background-color: #8be48b;
+    font-family: Arial, cursive;
+    background-color: #89bed8;
     text-align: center;
   }
   
-  
-  h1 {
-    font-family: 'Retro Gaming', cursive;
-  }
 
   h2 {
     font-family: 'Retro Gaming', cursive;
+    font-size: 64px
   }
 
   h3 {
@@ -18,6 +16,7 @@ body {
   
   p {
     font-family: 'Retro Gaming', cursive;
+    font-size: 16px;
   }
 
   video {
@@ -25,8 +24,17 @@ body {
     border-radius: 5px;
   }
   
-  img {
-    display: block;
-    margin: 0 auto;
-    max-width: 100%;
-  }
+
+.description-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.poderes {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  text-align: start;
+}
+

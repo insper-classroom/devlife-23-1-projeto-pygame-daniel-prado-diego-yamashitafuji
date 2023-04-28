@@ -45,3 +45,21 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.vel[1] * frame_time / 1000
         if len(pygame.sprite.spritecollide(self, blocks, False)) > 0:
             self.rect.y = preview_y
+
+
+
+
+
+        
+        
+
+
+        
+
+
+
+    
+
+
+    
+
