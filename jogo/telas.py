@@ -14,7 +14,6 @@ class TelaMenu:
         self.BOMB_INICIAL = pygame.image.load('jogo/img/bomb_inicial.png')
         self.BOMB_INICIAL_SCALE = pygame.transform.scale(self.BOMB_INICIAL, (275,275))
 
-
         self.font = 'jogo/img/fonte.ttf'
 
         self.BATTLE = pygame.font.Font(self.font, 40).render('BATTLE MODE', True, 	(255, 140, 0))
@@ -77,24 +76,25 @@ class TelaMenu:
     
 class TelaJogo:
     def __init__(self, largura_janela, altura_janela):
+        #  Inicializa parametros da tela
         self.largura_janela = largura_janela
         self.altura_janela = altura_janela
-
-        self.last_tick = 0
-
+        #  Inicializa parametros de sprites
         self.blocks = pygame.sprite.Group()
         self.players = pygame.sprite.Group()
-        self.sprite_w, self.sprite_h = 55, 50   # Tamanho horizontal e vertical em pixels das sprites, lembrando que as sprites sao quadrados
-    
+        self.sprite_w, self.sprite_h = 55, 50   # Tamanho horizontal e vertical em pixels das sprites
+        #  Inicializa imagens das sprites
         self.unbreakblock = pygame.transform.scale(pygame.image.load('assets/blocoinquebravel.png'), (self.sprite_w, self.sprite_h))
         self.breakblock = pygame.transform.scale(pygame.image.load('assets/blocoquebravel.png'), (self.sprite_w, self.sprite_h))
 
+
+        self.tick_anterior = 0
         self.origin_x, self.origin_y = (self.largura_janela - self.sprite_w * 15) / 2, (self.altura_janela - self.sprite_h * 13) / 2  # Coordenadas de origem [0, 0] do mapa
         self.n_inside_blocks_x, self.n_inside_blocks_y = 6, 5
 
         self.gera_paredes_inquebraveis(self.n_inside_blocks_x, self.n_inside_blocks_y)
         
-        self.gera_paredes_quebraveis(60, self.n_inside_blocks_x, self.n_inside_blocks_y)  # Caso seja um quantidade muito grande, o jogo quebra
+        self.gera_paredes_quebraveis(0, self.n_inside_blocks_x, self.n_inside_blocks_y)  # Caso seja um quantidade muito grande, o jogo quebra
 
         self.gera_jogadores()
         
@@ -102,10 +102,11 @@ class TelaJogo:
         window.fill((0,100,0))
         self.blocks.draw(window)
         self.players.draw(window)
+
         pygame.display.update()
 
     def atualiza(self):
-        self.current_tick = pygame.time.get_ticks()
+        self.tick_atual = pygame.time.get_ticks()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return 'exit'
@@ -130,9 +131,9 @@ class TelaJogo:
                 elif event.key == pygame.K_d:
                     self.player_um.vel[0] -= 400
 
-        self.player_um.atualiza_pos(self.last_tick, self.current_tick, self.blocks)
+        self.player_um.update(self.tick_anterior, self.tick_atual, self.blocks)
 
-        self.last_tick = self.current_tick
+        self.tick_anterior = self.tick_atual
 
         return self
 
@@ -182,12 +183,9 @@ class TelaJogo:
             self.blocks.add(block)
 
     def gera_jogadores(self):
-
-        self.player_um = Player(self.origin_x + self.sprite_w, self.origin_y + self.sprite_h, self.unbreakblock)
+        self.player_um = PlayerWhite(self.sprite_w, self.sprite_h)
+        self.player_um.posiciona(self.origin_x + self.sprite_w, self.origin_y + self.sprite_h)
         self.players.add(self.player_um)
-
-        self.player_dois = Player(self.origin_x + self.sprite_w * 13, self.origin_y + self.sprite_h * 11, self.unbreakblock)
-        self.players.add(self.player_dois)
         
 
 class TelasCredito:
