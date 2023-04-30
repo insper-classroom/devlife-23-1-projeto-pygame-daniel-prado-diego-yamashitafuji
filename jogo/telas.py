@@ -83,19 +83,15 @@ class TelaJogo:
         #  Inicializa parametros de sprites
         self.blocks = pygame.sprite.Group()
         self.players = pygame.sprite.Group()
-        self.sprite_w, self.sprite_h = 55, 50   # Tamanho horizontal e vertical em pixels das sprites
-        #  Inicializa imagens das sprites
-        self.unbreakblock = pygame.transform.scale(pygame.image.load('assets/blocoinquebravel.png'), (self.sprite_w, self.sprite_h))
-        self.breakblock = pygame.transform.scale(pygame.image.load('assets/blocoquebravel.png'), (self.sprite_w, self.sprite_h))
-
+        self.sprite_w, self.sprite_h = 50, 50   # Tamanho horizontal e vertical em pixels das sprites
 
         self.tick_anterior = 0
         self.origin_x, self.origin_y = (self.largura_janela - self.sprite_w * 15) / 2, (self.altura_janela - self.sprite_h * 13) / 2  # Coordenadas de origem [0, 0] do mapa
-        self.n_inside_blocks_x, self.n_inside_blocks_y = 6, 5
+        self.n_blocos_internos_x, self.n_blocos_internos_y = 6, 5
 
-        self.gera_paredes_inquebraveis(self.n_inside_blocks_x, self.n_inside_blocks_y)
+        self.gera_paredes_inquebraveis(self.n_blocos_internos_x, self.n_blocos_internos_y)
         
-        self.gera_paredes_quebraveis(0, self.n_inside_blocks_x, self.n_inside_blocks_y)  # Caso seja um quantidade muito grande, o jogo quebra
+        self.gera_paredes_quebraveis(60, self.n_blocos_internos_x, self.n_blocos_internos_y)  # Caso a quantidade exeda o limite, o jogo quebra
 
         self.gera_jogadores()
         
@@ -105,8 +101,9 @@ class TelaJogo:
         self.blocks.draw(window)
         # Desenha os players
         for player in self.players.sprites():
-            window.blit(player.image, (player.rect.x, player.rect.y  - 30))
+            window.blit(player.image, (player.rect.x, player.rect.y - (player.height - self.sprite_h)))
         pygame.display.update()
+
 
     def atualiza(self):
         self.tick_atual = pygame.time.get_ticks()
@@ -145,47 +142,49 @@ class TelaJogo:
         return self
 
 
-    def gera_paredes_inquebraveis(self, n_inside_blocks_x, n_inside_blocks_y):
-        for blocks in range(3 + 2 * n_inside_blocks_x):  # Desenha os blocos inquebraveis ao norte
+    def gera_paredes_inquebraveis(self, n_blocos_internos_x, n_blocos_internos_y):
+        for blocks in range(3 + 2 * n_blocos_internos_x):  # Desenha os blocos inquebraveis ao norte
             x = self.origin_x + self.sprite_w * blocks
             y = self.origin_y
-            self.blocks.add(UnbreakBlock(x, y, self.unbreakblock))#
-        for blocks in range(1, 2 + 2 * n_inside_blocks_y):  # ... ao oeste
+            self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
+        for blocks in range(1, 2 + 2 * n_blocos_internos_y):  # ... ao oeste
             x = self.origin_x
             y = self.origin_y + self.sprite_h * blocks
-            self.blocks.add(UnbreakBlock(x, y, self.unbreakblock))#
-        for blocks in range(1, 2 + 2 * n_inside_blocks_y):  # ... ao leste
-            x = self.origin_x + self.sprite_w * (n_inside_blocks_x * 2 + 2)
+            self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
+        for blocks in range(1, 2 + 2 * n_blocos_internos_y):  # ... ao leste
+            x = self.origin_x + self.sprite_w * (n_blocos_internos_x * 2 + 2)
             y = self.origin_y + self.sprite_h * blocks
-            self.blocks.add(UnbreakBlock(x, y, self.unbreakblock))
-        
-        for blocks in range(3 + 2 * n_inside_blocks_x):  # ... ao sul
+            self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
+        for blocks in range(3 + 2 * n_blocos_internos_x):  # ... ao sul
             x = self.origin_x + self.sprite_w * blocks
-            y = self.origin_y + self.sprite_h * (n_inside_blocks_y * 2 + 2)
-            self.blocks.add(UnbreakBlock(x, y, self.unbreakblock))
+            y = self.origin_y + self.sprite_h * (n_blocos_internos_y * 2 + 2)
+            self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
+        for y_unidade in range(2, 1 + n_blocos_internos_y * 2, 2):  # ... internos
+            y = self.origin_y + y_unidade * self.sprite_h
+            for x_unidade in range(2, 1 + n_blocos_internos_x * 2, 2):
+                x = self.origin_x + x_unidade * self.sprite_w
+                self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
 
-        for y in range(2, 1 + n_inside_blocks_y * 2, 2):
-            for x in range(2, 1 + n_inside_blocks_x * 2, 2):
-                self.blocks.add(UnbreakBlock(self.origin_x + x * self.sprite_w, self.origin_y + y * self.sprite_h, self.unbreakblock))
 
-
-    def gera_paredes_quebraveis(self, n_paredes, n_inside_blocks_x, n_inside_blocks_y):
+    def gera_paredes_quebraveis(self, n_paredes, n_blocos_internos_x, n_blocos_internos_y):
         for blocks in range(n_paredes):
             bool = True
             while bool:
-                x_unit = random.randint(1, 1 + 2 * n_inside_blocks_x)
+                x_unit = random.randint(1, 1 + 2 * n_blocos_internos_x)
                 if x_unit == 1:
-                    y_unit = random.randint(3, 2 * n_inside_blocks_y - 1)
+                    y_unit = random.randint(3, 2 * n_blocos_internos_y - 1)
                 elif x_unit == 2:
-                    y_unit = random.randint(2, 2 * n_inside_blocks_y)
-                elif x_unit == 2 * n_inside_blocks_x:
-                    y_unit = random.randint(1, 2 * n_inside_blocks_y)
-                elif x_unit == 2 * n_inside_blocks_x + 1:
-                    y_unit = random.randint(1, 2 * n_inside_blocks_y - 1)
+                    y_unit = random.randint(2, 2 * n_blocos_internos_y)
+                elif x_unit == 2 * n_blocos_internos_x:
+                    y_unit = random.randint(1, 2 * n_blocos_internos_y)
+                elif x_unit == 2 * n_blocos_internos_x + 1:
+                    y_unit = random.randint(1, 2 * n_blocos_internos_y - 1)
                 else:
                     y_unit = random.randint(1, 11)
-
-                block = BreakBlock(self.origin_x + x_unit * self.sprite_w, self.origin_y + y_unit * self.sprite_h, self.breakblock)
+                x = self.origin_x + x_unit * self.sprite_w
+                y = self.origin_y + y_unit * self.sprite_h
+                
+                block = BreakBlock(x, y, self.sprite_w, self.sprite_h)
 
                 if len(pygame.sprite.spritecollide(block, self.blocks, False)) == 0:
                     bool = False

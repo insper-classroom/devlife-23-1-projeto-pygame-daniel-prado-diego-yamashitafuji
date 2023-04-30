@@ -1,29 +1,40 @@
 import pygame
 
 
-class UnbreakBlock(pygame.sprite.Sprite):
-    def __init__(self, x, y, image):
+class Block(pygame.sprite.Sprite):
+    def __init__(self):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = image
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+
+class UnbreakBlock(Block):
+    def __init__(self, x, y, sprite_width, sprite_height):
+        self.x = x
+        self.y = y
+        # Inicializa imagem
+        imagem_w, imagem_h = pygame.image.load('assets/Blocos/blocoinquebravel.png').get_size()
+        imagem_res = imagem_w / imagem_h
+        self.width = sprite_width
+        self.height = sprite_height
+        self.image = pygame.transform.scale(pygame.image.load('assets/Blocos/blocoinquebravel.png'), (self.width, self.height * imagem_res ** -1))
+
+        Block.__init__(self)
+
 
     def eh_qubravel(self):
         return False
 
 
-class BreakBlock(pygame.sprite.Sprite):
-    def __init__(self, x, y, image):
-        pygame.sprite.Sprite.__init__(self)
+class BreakBlock(Block):
+    def __init__(self, x, y, sprite_width, sprite_height):
+        self.x = x
+        self.y = y
+        self.width = sprite_width
+        self.height = sprite_height
+        self.image = pygame.transform.scale(pygame.image.load('assets/Blocos/blocoquebravel.png'), (self.width, self.height))
 
-        self.image = image
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.mask = pygame.mask.from_surface(self.image)
+        Block.__init__(self)
 
     def eh_quebravel(self):
         return False
@@ -47,7 +58,8 @@ class Player(pygame.sprite.Sprite):
     def posiciona(self, x, y):
         self.rect.x = x
         self.rect.y = y
-    #  Atualiza o estado do jogador
+
+    #  Atualiza o estado do jogadorS
     def update(self, tick_anterior, tick_atual, blocos):
         # Atualiza a velodcidade do jogador
         if self.esta_movendo:
