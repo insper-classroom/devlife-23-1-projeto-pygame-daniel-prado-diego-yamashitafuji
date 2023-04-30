@@ -74,6 +74,7 @@ class TelaMenu:
                     return 'exit'
         return self
     
+
 class TelaJogo:
     def __init__(self, largura_janela, altura_janela):
         #  Inicializa parametros da tela
@@ -100,9 +101,11 @@ class TelaJogo:
         
     def desenha(self, window):
         window.fill((0,100,0))
+        # Desenha os blocos
         self.blocks.draw(window)
-        self.players.draw(window)
-
+        # Desenha os players
+        for player in self.players.sprites():
+            window.blit(player.image, (player.rect.x, player.rect.y  - 30))
         pygame.display.update()
 
     def atualiza(self):
@@ -113,24 +116,28 @@ class TelaJogo:
             
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_w:
-                    self.player_um.vel[1] -= 400
+                    self.player_um.direcao = 'norte'
+                    self.player_um.esta_movendo = True
                 elif event.key == pygame.K_a:
-                    self.player_um.vel[0] -= 400
+                    self.player_um.direcao = 'oeste'
+                    self.player_um.esta_movendo = True
                 elif event.key == pygame.K_s:
-                    self.player_um.vel[1] += 400
+                    self.player_um.direcao = 'sul'
+                    self.player_um.esta_movendo = True
                 elif event.key == pygame.K_d:
-                    self.player_um.vel[0] += 400
+                    self.player_um.direcao = 'leste'
+                    self.player_um.esta_movendo = True
 
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_w:
-                    self.player_um.vel[1] += 400
-                elif event.key == pygame.K_a:
-                    self.player_um.vel[0] += 400
-                elif event.key == pygame.K_s:
-                    self.player_um.vel[1] -= 400
-                elif event.key == pygame.K_d:
-                    self.player_um.vel[0] -= 400
-
+                if event.key == pygame.K_w and self.player_um.direcao == 'norte':
+                    self.player_um.esta_movendo = False
+                elif event.key == pygame.K_a and self.player_um.direcao == 'oeste':
+                    self.player_um.esta_movendo = False
+                elif event.key == pygame.K_s and self.player_um.direcao == 'sul':
+                    self.player_um.esta_movendo = False
+                elif event.key == pygame.K_d and self.player_um.direcao == 'leste':
+                    self.player_um.esta_movendo = False
+                    
         self.player_um.update(self.tick_anterior, self.tick_atual, self.blocks)
 
         self.tick_anterior = self.tick_atual
@@ -184,13 +191,12 @@ class TelaJogo:
                     bool = False
             self.blocks.add(block)
 
+
     def gera_jogadores(self):
         self.player_um = PlayerWhite(self.sprite_w, self.sprite_h)
         self.player_um.posiciona(self.origin_x + self.sprite_w, self.origin_y + self.sprite_h)
         self.players.add(self.player_um)
         
-
-    
 
 class TelasCredito:
     def __init__(self, largura_janela, altura_janela):
