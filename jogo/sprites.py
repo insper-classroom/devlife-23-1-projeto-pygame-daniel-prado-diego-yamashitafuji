@@ -16,14 +16,14 @@ class Block(pygame.sprite.Sprite):
 
 
 class UnbreakBlock(Block):
-    def __init__(self, x, y, sprite_width, sprite_height):
+    def __init__(self, x, y, sprite_size):
         self.x = x
         self.y = y
         # Inicializa imagem
         imagem_w, imagem_h = pygame.image.load('assets/Blocos/blocoinquebravel.png').get_size()
         imagem_res = imagem_w / imagem_h
-        self.width = sprite_width
-        self.height = sprite_height
+        self.width = sprite_size[0]
+        self.height = sprite_size[1]
         self.image = pygame.transform.scale(pygame.image.load('assets/Blocos/blocoinquebravel.png'), (self.width, self.height * imagem_res ** -1))
 
         Block.__init__(self)
@@ -34,11 +34,11 @@ class UnbreakBlock(Block):
 
 
 class BreakBlock(Block):
-    def __init__(self, x, y, sprite_width, sprite_height):
+    def __init__(self, x, y, sprite_size):
         self.x = x
         self.y = y
-        self.width = sprite_width
-        self.height = sprite_height
+        self.width = sprite_size[0]
+        self.height = sprite_size[1]
         self.image = pygame.transform.scale(pygame.image.load('assets/Blocos/blocoquebravel.png'), (self.width, self.height))
 
         Block.__init__(self)
@@ -48,11 +48,11 @@ class BreakBlock(Block):
 
     
 class Player(pygame.sprite.Sprite):
-    def __init__(self, sprite_width, sprite_height, blocos):
+    def __init__(self, x, y, sprite_size, blocos):
         pygame.sprite.Sprite.__init__(self)
         # Inicializa estado dos jogadores
-        self.sprite_width = sprite_width
-        self.sprite_height = sprite_height
+        self.sprite_width = sprite_size[0]
+        self.sprite_height = sprite_size[1]
         self.tick_anterior = 0
         self.direcao = 'sul'
         self.vel = [0, 0]
@@ -62,14 +62,10 @@ class Player(pygame.sprite.Sprite):
         self.frequencia = 20  # Frequencia da animacao em hertz
         # Inicializa surface e rect do player
         self.image = self.sprite_sheet[self.direcao][self.ind_imagem]
-        self.rect = pygame.Rect(0, 0, sprite_width, sprite_height)
-        self.blocos = blocos
-
-    # Da a posicao do retangulo
-    def posiciona(self, x, y):
+        self.rect = pygame.Rect(0, 0, sprite_size[0], sprite_size[1])
         self.rect.x = x
         self.rect.y = y
-
+        self.blocos = blocos
     #  Atualiza o estado do jogadorS
     def update(self, tick_atual):
         # Atualiza a velodcidade do jogador
@@ -142,9 +138,9 @@ class Player(pygame.sprite.Sprite):
 
 
 class PlayerWhite(Player):
-    def __init__(self, sprite_width, sprite_height, blocos):
-        self.width = sprite_width
-        self.height = sprite_height * 1.6
+    def __init__(self, x, y, sprite_size, blocos):
+        self.width = sprite_size[0]
+        self.height = sprite_size[1] * 1.6
 
         self.sprite_sheet = {
             'norte': [
@@ -173,7 +169,7 @@ class PlayerWhite(Player):
             ]
         }
         
-        Player.__init__(self, sprite_width, sprite_height, blocos)
+        Player.__init__(self, x, y, sprite_size, blocos)
 
 
 class PlayerBlack(Player):
@@ -207,10 +203,10 @@ class PlayerBlack(Player):
 
 
 class Bomb(pygame.sprite.Sprite):
-    def __init__(self,x, y, sprite_widht, sprite_height):
+    def __init__(self, x, y, sprite_size):
         pygame.sprite.Sprite.__init__(self)
-        self.width = sprite_widht
-        self.height = sprite_height
+        self.width = sprite_size[0]
+        self.height = sprite_size[1]
         # Inicializa imagens da bomba
         self.sprite_sheet = [
             pygame.transform.scale(pygame.image.load('assets/Bomba/bomb_0.png'), (self.width, self.height)),
@@ -226,5 +222,4 @@ class Bomb(pygame.sprite.Sprite):
         # Inicializa parametros da bomba
         self.tick_inicial = pygame.time.get_ticks()
         self.raio = 2 
-
     #def update(self):

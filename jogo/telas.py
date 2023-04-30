@@ -83,12 +83,11 @@ class TelaJogo:
         #  Inicializa parametros de sprites
         self.blocks = pygame.sprite.Group()
         self.players = pygame.sprite.Group()
-        self.bombas = pygame.sprite.Group()
-        self.sprite_w, self.sprite_h = 50, 50   # Tamanho horizontal e vertical em pixels das sprites
+        self.bombas = pygame.sprite.Group()  # Tamanho horizontal e vertical em pixels das sprites
+        self.sprite_size = [50, 50]
         #  Inicializa parametros do mapa
         self.n_blocos_internos_x, self.n_blocos_internos_y = 6, 5
-        self.mapa = Mapa((self.n_blocos_internos_x * 2 + 3) * self.sprite_w, (self.n_blocos_internos_y * 2 + 3) * self.sprite_h)
-
+        self.mapa = Mapa((self.n_blocos_internos_x * 2 + 3) * self.sprite_size[0], (self.n_blocos_internos_y * 2 + 3) * self.sprite_size[1])
         self.gera_paredes_inquebraveis(self.n_blocos_internos_x, self.n_blocos_internos_y)
         
         self.gera_paredes_quebraveis(0, self.n_blocos_internos_x, self.n_blocos_internos_y)  # Caso a quantidade exeda o limite, o jogo quebra
@@ -103,7 +102,7 @@ class TelaJogo:
         self.blocks.draw(self.mapa)
         # Desenha os players
         for player in self.players.sprites():
-            self.mapa.blit(player.image, (player.rect.x, player.rect.y - (player.height - self.sprite_h)))
+            self.mapa.blit(player.image, (player.rect.x, player.rect.y - (player.height - self.sprite_size[1])))
         window.blit(self.mapa, ((self.largura_janela - self.mapa.width) / 2, (self.altura_janela - self.mapa.height) / 2))
         pygame.display.update()
 
@@ -127,6 +126,8 @@ class TelaJogo:
                 elif event.key == pygame.K_d:
                     self.player_um.direcao = 'leste'
                     self.player_um.esta_movendo = True
+                elif event.key == pygame.K_SPACE:
+                    self.bombas.add(Bomb(self.player_um.rect.x, self.player_um.rect.y, self.sprite_s))
 
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_w and self.player_um.direcao == 'norte':
@@ -145,26 +146,26 @@ class TelaJogo:
 
     def gera_paredes_inquebraveis(self, n_blocos_internos_x, n_blocos_internos_y):
         for blocks in range(3 + 2 * n_blocos_internos_x):  # Desenha os blocos inquebraveis ao norte
-            x = self.sprite_w * blocks
+            x = self.sprite_size[0] * blocks
             y = 0
-            self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
+            self.blocks.add(UnbreakBlock(x, y, self.sprite_size))
         for blocks in range(1, 2 + 2 * n_blocos_internos_y):  # ... ao oeste
             x = 0
-            y = self.sprite_h * blocks
-            self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
+            y = self.sprite_size[1] * blocks
+            self.blocks.add(UnbreakBlock(x, y, self.sprite_size))
         for blocks in range(1, 2 + 2 * n_blocos_internos_y):  # ... ao leste
-            x = self.sprite_w * (n_blocos_internos_x * 2 + 2)
-            y = self.sprite_h * blocks
-            self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
+            x = self.sprite_size[0] * (n_blocos_internos_x * 2 + 2)
+            y = self.sprite_size[1] * blocks
+            self.blocks.add(UnbreakBlock(x, y, self.sprite_size))
         for blocks in range(3 + 2 * n_blocos_internos_x):  # ... ao sul
-            x = self.sprite_w * blocks
-            y = self.sprite_h * (n_blocos_internos_y * 2 + 2)
-            self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
+            x = self.sprite_size[0] * blocks
+            y = self.sprite_size[1] * (n_blocos_internos_y * 2 + 2)
+            self.blocks.add(UnbreakBlock(x, y, self.sprite_size))
         for y_unidade in range(2, 1 + n_blocos_internos_y * 2, 2):  # ... internos
-            y = y_unidade * self.sprite_h
+            y = y_unidade * self.sprite_size[1]
             for x_unidade in range(2, 1 + n_blocos_internos_x * 2, 2):
-                x = x_unidade * self.sprite_w
-                self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
+                x = x_unidade * self.sprite_size[0]
+                self.blocks.add(UnbreakBlock(x, y, self.sprite_size))
 
 
     def gera_paredes_quebraveis(self, n_paredes, n_blocos_internos_x, n_blocos_internos_y):
@@ -182,10 +183,10 @@ class TelaJogo:
                     y_unidade = random.randint(1, 2 * n_blocos_internos_y - 1)
                 else:
                     y_unidade = random.randint(1, 11)
-                x = x_unidade * self.sprite_w
-                y = y_unidade * self.sprite_h
+                x = x_unidade * self.sprite_size[0]
+                y = y_unidade * self.sprite_size[1]
 
-                block = BreakBlock(x, y, self.sprite_w, self.sprite_h)
+                block = BreakBlock(x, y, self.sprite_size)
 
                 if len(pygame.sprite.spritecollide(block, self.blocks, False)) == 0:
                     bool = False
@@ -193,8 +194,7 @@ class TelaJogo:
 
 
     def gera_jogadores(self):
-        self.player_um = PlayerWhite(self.sprite_w, self.sprite_h, self.blocks)
-        self.player_um.posiciona(self.sprite_w, self.sprite_h)
+        self.player_um = PlayerWhite(self.sprite_size[0], self.sprite_size[1], self.sprite_size, self.blocks)
         self.players.add(self.player_um)
         
 
