@@ -83,11 +83,11 @@ class TelaJogo:
         #  Inicializa parametros de sprites
         self.blocks = pygame.sprite.Group()
         self.players = pygame.sprite.Group()
+        self.bombas = pygame.sprite.Group()
         self.sprite_w, self.sprite_h = 50, 50   # Tamanho horizontal e vertical em pixels das sprites
-
-        self.tick_anterior = 0
-        self.origin_x, self.origin_y = (self.largura_janela - self.sprite_w * 15) / 2, (self.altura_janela - self.sprite_h * 13) / 2  # Coordenadas de origem [0, 0] do mapa
+        #  Inicializa parametros do mapa
         self.n_blocos_internos_x, self.n_blocos_internos_y = 6, 5
+        self.mapa = Mapa((self.n_blocos_internos_x * 2 + 3) * self.sprite_w, (self.n_blocos_internos_y * 2 + 3) * self.sprite_h)
 
         self.gera_paredes_inquebraveis(self.n_blocos_internos_x, self.n_blocos_internos_y)
         
@@ -96,12 +96,15 @@ class TelaJogo:
         self.gera_jogadores()
         
     def desenha(self, window):
-        window.fill((0,100,0))
+        window.fill((0, 0 ,0))
+        self.mapa.fill((0,100,0))
         # Desenha os blocos
-        self.blocks.draw(window)
+        self.bombas.draw(self.mapa)
+        self.blocks.draw(self.mapa)
         # Desenha os players
         for player in self.players.sprites():
-            window.blit(player.image, (player.rect.x, player.rect.y - (player.height - self.sprite_h)))
+            self.mapa.blit(player.image, (player.rect.x, player.rect.y - (player.height - self.sprite_h)))
+        window.blit(self.mapa, ((self.largura_janela - self.mapa.width) / 2, (self.altura_janela - self.mapa.height) / 2))
         pygame.display.update()
 
 
@@ -135,34 +138,32 @@ class TelaJogo:
                 elif event.key == pygame.K_d and self.player_um.direcao == 'leste':
                     self.player_um.esta_movendo = False
                     
-        self.player_um.update(self.tick_anterior, self.tick_atual, self.blocks)
-
-        self.tick_anterior = self.tick_atual
-
+        self.players.update(self.tick_atual)
+        self.bombas.update(self.tick_atual)
         return self
 
 
     def gera_paredes_inquebraveis(self, n_blocos_internos_x, n_blocos_internos_y):
         for blocks in range(3 + 2 * n_blocos_internos_x):  # Desenha os blocos inquebraveis ao norte
-            x = self.origin_x + self.sprite_w * blocks
-            y = self.origin_y
+            x = self.sprite_w * blocks
+            y = 0
             self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
         for blocks in range(1, 2 + 2 * n_blocos_internos_y):  # ... ao oeste
-            x = self.origin_x
-            y = self.origin_y + self.sprite_h * blocks
+            x = 0
+            y = self.sprite_h * blocks
             self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
         for blocks in range(1, 2 + 2 * n_blocos_internos_y):  # ... ao leste
-            x = self.origin_x + self.sprite_w * (n_blocos_internos_x * 2 + 2)
-            y = self.origin_y + self.sprite_h * blocks
+            x = self.sprite_w * (n_blocos_internos_x * 2 + 2)
+            y = self.sprite_h * blocks
             self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
         for blocks in range(3 + 2 * n_blocos_internos_x):  # ... ao sul
-            x = self.origin_x + self.sprite_w * blocks
-            y = self.origin_y + self.sprite_h * (n_blocos_internos_y * 2 + 2)
+            x = self.sprite_w * blocks
+            y = self.sprite_h * (n_blocos_internos_y * 2 + 2)
             self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
         for y_unidade in range(2, 1 + n_blocos_internos_y * 2, 2):  # ... internos
-            y = self.origin_y + y_unidade * self.sprite_h
+            y = y_unidade * self.sprite_h
             for x_unidade in range(2, 1 + n_blocos_internos_x * 2, 2):
-                x = self.origin_x + x_unidade * self.sprite_w
+                x = x_unidade * self.sprite_w
                 self.blocks.add(UnbreakBlock(x, y, self.sprite_w, self.sprite_h))
 
 
@@ -170,19 +171,19 @@ class TelaJogo:
         for blocks in range(n_paredes):
             bool = True
             while bool:
-                x_unit = random.randint(1, 1 + 2 * n_blocos_internos_x)
-                if x_unit == 1:
-                    y_unit = random.randint(3, 2 * n_blocos_internos_y - 1)
-                elif x_unit == 2:
-                    y_unit = random.randint(2, 2 * n_blocos_internos_y)
-                elif x_unit == 2 * n_blocos_internos_x:
-                    y_unit = random.randint(1, 2 * n_blocos_internos_y)
-                elif x_unit == 2 * n_blocos_internos_x + 1:
-                    y_unit = random.randint(1, 2 * n_blocos_internos_y - 1)
+                x_unidade = random.randint(1, 1 + 2 * n_blocos_internos_x)
+                if x_unidade == 1:
+                    y_unidade = random.randint(3, 2 * n_blocos_internos_y - 1)
+                elif x_unidade == 2:
+                    y_unidade = random.randint(2, 2 * n_blocos_internos_y)
+                elif x_unidade == 2 * n_blocos_internos_x:
+                    y_unidade = random.randint(1, 2 * n_blocos_internos_y)
+                elif x_unidade == 2 * n_blocos_internos_x + 1:
+                    y_unidade = random.randint(1, 2 * n_blocos_internos_y - 1)
                 else:
-                    y_unit = random.randint(1, 11)
-                x = self.origin_x + x_unit * self.sprite_w
-                y = self.origin_y + y_unit * self.sprite_h
+                    y_unidade = random.randint(1, 11)
+                x = x_unidade * self.sprite_w
+                y = y_unidade * self.sprite_h
 
                 block = BreakBlock(x, y, self.sprite_w, self.sprite_h)
 
@@ -192,8 +193,8 @@ class TelaJogo:
 
 
     def gera_jogadores(self):
-        self.player_um = PlayerWhite(self.sprite_w, self.sprite_h)
-        self.player_um.posiciona(self.origin_x + self.sprite_w, self.origin_y + self.sprite_h)
+        self.player_um = PlayerWhite(self.sprite_w, self.sprite_h, self.blocks)
+        self.player_um.posiciona(self.sprite_w, self.sprite_h)
         self.players.add(self.player_um)
         
 
