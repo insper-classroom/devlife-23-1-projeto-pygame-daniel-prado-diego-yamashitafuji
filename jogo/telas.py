@@ -91,7 +91,7 @@ class TelaJogo:
 
         self.gera_paredes_inquebraveis(self.n_blocos_internos_x, self.n_blocos_internos_y)
         
-        self.gera_paredes_quebraveis(60, self.n_blocos_internos_x, self.n_blocos_internos_y)  # Caso a quantidade exeda o limite, o jogo quebra
+        self.gera_paredes_quebraveis(0, self.n_blocos_internos_x, self.n_blocos_internos_y)  # Caso a quantidade exeda o limite, o jogo quebra
 
         self.gera_jogadores()
         
@@ -183,7 +183,7 @@ class TelaJogo:
                     y_unit = random.randint(1, 11)
                 x = self.origin_x + x_unit * self.sprite_w
                 y = self.origin_y + y_unit * self.sprite_h
-                
+
                 block = BreakBlock(x, y, self.sprite_w, self.sprite_h)
 
                 if len(pygame.sprite.spritecollide(block, self.blocks, False)) == 0:

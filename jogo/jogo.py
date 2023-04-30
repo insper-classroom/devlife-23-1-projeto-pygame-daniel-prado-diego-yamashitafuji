@@ -24,8 +24,7 @@ class Jogo:
 
 
 if True:
-    Jogo().roda()
-
+    Jogo().roda()   
 
 
 

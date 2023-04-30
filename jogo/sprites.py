@@ -44,6 +44,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, sprite_width, sprite_height):
         pygame.sprite.Sprite.__init__(self)
         # Inicializa estado dos jogadores
+        self.sprite_width = sprite_width
+        self.sprite_height = sprite_height
         self.direcao = 'sul'
         self.vel = [0, 0]
         self.esta_movendo = False
@@ -70,26 +72,59 @@ class Player(pygame.sprite.Sprite):
             elif self.direcao == 'sul':
                 self.vel = [0, 400]
             elif self.direcao == 'leste':
-                self.vel = [400, 0]
+                self.vel = [400, 0] 
         else:
             self.vel = [0, 0]
         # Atualiza a posicao do jogador
-        ultimo_x, ultimo_y = self.rect.x, self.rect.y
+        ultima_pos = [self.rect.x, self.rect.y]
         frame_time = tick_atual - tick_anterior
         self.rect.x += self.vel[0] * frame_time / 1000
-        if len(pygame.sprite.spritecollide(self, blocos, False)) > 0:
-            self.rect.x = ultimo_x
         self.rect.y += self.vel[1] * frame_time / 1000
-        if len(pygame.sprite.spritecollide(self, blocos, False)) > 0:
-            self.rect.y = ultimo_y
+        if len(pygame.sprite.spritecollide(self, blocos, False)) > 1:
+            self.rect.x,self.rect.y = ultima_pos
+        # Deslocamento suavizado em vertices de bloco
+        elif len(pygame.sprite.spritecollide(self, blocos, False)) == 1:
+            bloco_colidido = pygame.sprite.spritecollide(self, blocos, False)[0]
+            if self.direcao == 'norte':  # Colisao para cima
+                self.rect.y = ultima_pos[1]
+                if self.rect.midtop[0] > bloco_colidido.rect.right:
+                    self.rect.x += 1
+                elif self.rect.midtop[0] < bloco_colidido.rect.left:
+                    self.rect.x -= 1
+                else:
+                    self.rect.x = ultima_pos[0]
+            elif self.direcao == 'leste':  # ... direita
+                self.rect.x = ultima_pos[0]
+                if self.rect.midright[1] > bloco_colidido.rect.bottom:
+                    self.rect.y += 1
+                elif self.rect.midright[1] < bloco_colidido.rect.top:
+                    self.rect.y -= 1
+                else:
+                    self.rect.y = ultima_pos[1]
+            elif self.direcao == 'sul':  # ... baixo
+                self.rect.y = ultima_pos[1]
+                if self.rect.midbottom[0] > bloco_colidido.rect.right:
+                    self.rect.x += 1
+                elif self.rect.midbottom[0] < bloco_colidido.rect.left:
+                    self.rect.x -= 1
+                else:
+                    self.rect.y = ultima_pos[1]
+            elif self.direcao == 'oeste':  # ...esquerda
+                self.rect.x = ultima_pos[0]
+                if self.rect.midleft[1] > bloco_colidido.rect.bottom:
+                    self.rect.y += 1
+                elif self.rect.midleft[1] < bloco_colidido.rect.top:
+                    self.rect.y -= 1
+                else:
+                    self.rect.x = ultima_pos[0]
         # Atualiza a sprite do jogador
-        if ultimo_x == self.rect.x and ultimo_y == self.rect.y:
+        if ultima_pos == [self.rect.x, self.rect.y]:
             self.ind_imagem = 0
-            self.se_moveu = True
-        elif self.se_moveu:
+            self.esta_parado = True
+        elif self.esta_parado:
             self.tick_origem_animacao = tick_atual
-            self.se_moveu = False
-        if self.tick_origem_animacao + 1000 / self.frequencia < tick_atual and not self.se_moveu:
+            self.esta_parado = False
+        if self.tick_origem_animacao + 1000 / self.frequencia < tick_atual and not self.esta_parado:
             self.tick_origem_animacao += 1000 / self.frequencia
             self.ind_imagem = (self.ind_imagem + 1) % len(self.sprite_sheet[self.direcao])
 
