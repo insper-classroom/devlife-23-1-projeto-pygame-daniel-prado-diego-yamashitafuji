@@ -81,27 +81,84 @@ class TelaJogo:
         self.largura_janela = largura_janela
         self.altura_janela = altura_janela
         #  Inicializa parametros de sprites
-        self.blocks = pygame.sprite.Group()
-        self.players = pygame.sprite.Group()
-        self.bombas = pygame.sprite.Group()  # Tamanho horizontal e vertical em pixels das sprites
-        self.sprite_size = [50, 50]
+        self.blocos = pygame.sprite.Group()
+        self.bombas = pygame.sprite.Group()
+        self.explosoes = pygame.sprite.Group()
+        self.jogadores = pygame.sprite.Group()
+        self.sprite_size = [50, 50]  # Tamanho horizontal e vertical em pixels das sprites
         #  Inicializa parametros do mapa
-        self.n_blocos_internos_x, self.n_blocos_internos_y = 6, 5
-        self.mapa = Mapa((self.n_blocos_internos_x * 2 + 3) * self.sprite_size[0], (self.n_blocos_internos_y * 2 + 3) * self.sprite_size[1])
-        self.gera_paredes_inquebraveis(self.n_blocos_internos_x, self.n_blocos_internos_y)
-        
-        self.gera_paredes_quebraveis(0, self.n_blocos_internos_x, self.n_blocos_internos_y)  # Caso a quantidade exeda o limite, o jogo quebra
-
+        self.n_blocos_internos = [6, 5]  # N horizontal e N vertical
+        self.n_blocos_quebraveis = 0
+        self.largura_mapa = (self.n_blocos_internos[0] * 2 + 3) * self.sprite_size[0]
+        self.altura_mapa = (self.n_blocos_internos[1] * 2 + 3) * self.sprite_size[1]
+        self.mapa = Mapa(self)
+        self.gera_paredes_inquebraveis()
+        self.gera_paredes_quebraveis()  # Caso a quantidade exeda o limite, o jogo quebra
         self.gera_jogadores()
         
+
+    def gera_paredes_inquebraveis(self):
+        for blocks in range(3 + 2 * self.n_blocos_internos[0]):  # Desenha os blocos inquebraveis ao norte
+            x = self.sprite_size[0] * blocks
+            y = 0
+            self.blocos.add(UnbreakBlock(self, x, y))
+        for blocks in range(1, 2 + 2 * self.n_blocos_internos[1]):  # ... ao oeste
+            x = 0
+            y = self.sprite_size[1] * blocks
+            self.blocos.add(UnbreakBlock(self, x, y))
+        for blocks in range(1, 2 + 2 * self.n_blocos_internos[1]):  # ... ao leste
+            x = self.sprite_size[0] * (self.n_blocos_internos[0] * 2 + 2)
+            y = self.sprite_size[1] * blocks
+            self.blocos.add(UnbreakBlock(self, x, y))
+        for blocks in range(3 + 2 * self.n_blocos_internos[0]):  # ... ao sul
+            x = self.sprite_size[0] * blocks
+            y = self.sprite_size[1] * (self.n_blocos_internos[1] * 2 + 2)
+            self.blocos.add(UnbreakBlock(self, x, y))
+        for y_unidade in range(2, 1 + self.n_blocos_internos[1] * 2, 2):  # ... internos
+            y = y_unidade * self.sprite_size[1]
+            for x_unidade in range(2, 1 + self.n_blocos_internos[0] * 2, 2):
+                x = x_unidade * self.sprite_size[0]
+                self.blocos.add(UnbreakBlock(self, x, y))
+
+
+    def gera_paredes_quebraveis(self):
+        for i in range(self.n_blocos_quebraveis):
+            bool = True
+            while bool:
+                x_unidade = random.randint(1, 1 + 2 * self.n_blocos_internos[0])
+                if x_unidade == 1:
+                    y_unidade = random.randint(3, 2 * self.n_blocos_internos[1] - 1)
+                elif x_unidade == 2:
+                    y_unidade = random.randint(2, 2 * self.n_blocos_internos[1])
+                elif x_unidade == 2 * self.n_blocos_internos[0]:
+                    y_unidade = random.randint(1, 2 * self.n_blocos_internos[1])
+                elif x_unidade == 2 * self.n_blocos_internos[0] + 1:
+                    y_unidade = random.randint(1, 2 * self.n_blocos_internos[1] - 1)
+                else:
+                    y_unidade = random.randint(1, 11)
+                x = x_unidade * self.sprite_size[0]
+                y = y_unidade * self.sprite_size[1]
+
+                bloco = BreakBlock(self, x, y)
+
+                if len(pygame.sprite.spritecollide(bloco, self.blocos, False)) == 0:
+                    bool = False
+            self.blocos.add(bloco)
+
+
+    def gera_jogadores(self):
+        self.jogador_um = PlayerWhite(self, self.sprite_size[0], self.sprite_size[1])
+        
+
     def desenha(self, window):
         window.fill((0, 0 ,0))
         self.mapa.fill((0,100,0))
         # Desenha os blocos
+        self.blocos.draw(self.mapa)
+        self.explosoes.draw(self.mapa)
         self.bombas.draw(self.mapa)
-        self.blocks.draw(self.mapa)
         # Desenha os players
-        for player in self.players.sprites():
+        for player in self.jogadores.sprites():
             self.mapa.blit(player.image, (player.rect.x, player.rect.y - (player.height - self.sprite_size[1])))
         window.blit(self.mapa, ((self.largura_janela - self.mapa.width) / 2, (self.altura_janela - self.mapa.height) / 2))
         pygame.display.update()
@@ -115,88 +172,35 @@ class TelaJogo:
             
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_w:
-                    self.player_um.direcao = 'norte'
-                    self.player_um.esta_movendo = True
+                    self.jogador_um.direcao = 'norte'
+                    self.jogador_um.esta_movendo = True
                 elif event.key == pygame.K_a:
-                    self.player_um.direcao = 'oeste'
-                    self.player_um.esta_movendo = True
+                    self.jogador_um.direcao = 'oeste'
+                    self.jogador_um.esta_movendo = True
                 elif event.key == pygame.K_s:
-                    self.player_um.direcao = 'sul'
-                    self.player_um.esta_movendo = True
+                    self.jogador_um.direcao = 'sul'
+                    self.jogador_um.esta_movendo = True
                 elif event.key == pygame.K_d:
-                    self.player_um.direcao = 'leste'
-                    self.player_um.esta_movendo = True
+                    self.jogador_um.direcao = 'leste'
+                    self.jogador_um.esta_movendo = True
                 elif event.key == pygame.K_SPACE:
-                    self.bombas.add(Bomb(self.player_um.rect.x, self.player_um.rect.y, self.sprite_s))
+                    self.jogador_um.cria_bomba(self)
+                    
 
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_w and self.player_um.direcao == 'norte':
-                    self.player_um.esta_movendo = False
-                elif event.key == pygame.K_a and self.player_um.direcao == 'oeste':
-                    self.player_um.esta_movendo = False
-                elif event.key == pygame.K_s and self.player_um.direcao == 'sul':
-                    self.player_um.esta_movendo = False
-                elif event.key == pygame.K_d and self.player_um.direcao == 'leste':
-                    self.player_um.esta_movendo = False
+                if event.key == pygame.K_w and self.jogador_um.direcao == 'norte':
+                    self.jogador_um.esta_movendo = False
+                elif event.key == pygame.K_a and self.jogador_um.direcao == 'oeste':
+                    self.jogador_um.esta_movendo = False
+                elif event.key == pygame.K_s and self.jogador_um.direcao == 'sul':
+                    self.jogador_um.esta_movendo = False
+                elif event.key == pygame.K_d and self.jogador_um.direcao == 'leste':
+                    self.jogador_um.esta_movendo = False
                     
-        self.players.update(self.tick_atual)
-        self.bombas.update(self.tick_atual)
+        self.jogadores.update(self)
+        self.bombas.update(self)
         return self
 
-
-    def gera_paredes_inquebraveis(self, n_blocos_internos_x, n_blocos_internos_y):
-        for blocks in range(3 + 2 * n_blocos_internos_x):  # Desenha os blocos inquebraveis ao norte
-            x = self.sprite_size[0] * blocks
-            y = 0
-            self.blocks.add(UnbreakBlock(x, y, self.sprite_size))
-        for blocks in range(1, 2 + 2 * n_blocos_internos_y):  # ... ao oeste
-            x = 0
-            y = self.sprite_size[1] * blocks
-            self.blocks.add(UnbreakBlock(x, y, self.sprite_size))
-        for blocks in range(1, 2 + 2 * n_blocos_internos_y):  # ... ao leste
-            x = self.sprite_size[0] * (n_blocos_internos_x * 2 + 2)
-            y = self.sprite_size[1] * blocks
-            self.blocks.add(UnbreakBlock(x, y, self.sprite_size))
-        for blocks in range(3 + 2 * n_blocos_internos_x):  # ... ao sul
-            x = self.sprite_size[0] * blocks
-            y = self.sprite_size[1] * (n_blocos_internos_y * 2 + 2)
-            self.blocks.add(UnbreakBlock(x, y, self.sprite_size))
-        for y_unidade in range(2, 1 + n_blocos_internos_y * 2, 2):  # ... internos
-            y = y_unidade * self.sprite_size[1]
-            for x_unidade in range(2, 1 + n_blocos_internos_x * 2, 2):
-                x = x_unidade * self.sprite_size[0]
-                self.blocks.add(UnbreakBlock(x, y, self.sprite_size))
-
-
-    def gera_paredes_quebraveis(self, n_paredes, n_blocos_internos_x, n_blocos_internos_y):
-        for blocks in range(n_paredes):
-            bool = True
-            while bool:
-                x_unidade = random.randint(1, 1 + 2 * n_blocos_internos_x)
-                if x_unidade == 1:
-                    y_unidade = random.randint(3, 2 * n_blocos_internos_y - 1)
-                elif x_unidade == 2:
-                    y_unidade = random.randint(2, 2 * n_blocos_internos_y)
-                elif x_unidade == 2 * n_blocos_internos_x:
-                    y_unidade = random.randint(1, 2 * n_blocos_internos_y)
-                elif x_unidade == 2 * n_blocos_internos_x + 1:
-                    y_unidade = random.randint(1, 2 * n_blocos_internos_y - 1)
-                else:
-                    y_unidade = random.randint(1, 11)
-                x = x_unidade * self.sprite_size[0]
-                y = y_unidade * self.sprite_size[1]
-
-                block = BreakBlock(x, y, self.sprite_size)
-
-                if len(pygame.sprite.spritecollide(block, self.blocks, False)) == 0:
-                    bool = False
-            self.blocks.add(block)
-
-
-    def gera_jogadores(self):
-        self.player_um = PlayerWhite(self.sprite_size[0], self.sprite_size[1], self.sprite_size, self.blocks)
-        self.players.add(self.player_um)
-        
 
 class TelasCredito:
     def __init__(self, largura_janela, altura_janela):
