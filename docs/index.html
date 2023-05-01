@@ -2,42 +2,80 @@
 <html lang="pt-BR">
     
     <head>
-
+        
         <title>bomberman</title>
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="style.css">
         
     </head>
 
-    <body>
+    <body> 
+        
+        <header>
+            <div class="logo"></div>
+            <nav>
+                <ul>
+                    <li onclick="window.scrollTo({
+                        top: document.getElementById('descrição').getBoundingClientRect().top + window.pageYOffset,
+                        behavior: 'smooth'
+                    })">
+                        Descrição
+                    </li>
+                    
+                    <li onclick="window.scrollTo({
+                        top: document.getElementById('video').getBoundingClientRect().top + window.pageYOffset - document.querySelector('header').offsetHeight,
+                        behavior: 'smooth'
+                    })">
+                        Vídeo
+                    </li>
 
+                    <li onclick="window.scrollTo({
+                        top: document.getElementById('histórico').getBoundingClientRect().top + window.pageYOffset - document.querySelector('header').offsetHeight,
+                        behavior: 'smooth'
+                    })">
+                        Histórico
+                    </li>
 
-        <figure>
-            <img src="img/bomber_title.png" alt="opção multijogador"  width="400" height="300">
-        </figure>
-    
-        <hr style="border: 1px solid rgb(165, 168, 207); margin: 70px 0;">
+                    <li>
+                        Download
+                    </li>
 
-       <h2> Descrição do jogo </h2>
+                    <li onclick="window.scrollTo({
+                        top: document.getElementById('Desenvolvedores').getBoundingClientRect().top + window.pageYOffset - document.querySelector('header').offsetHeight,
+                        behavior: 'smooth'
+                    })">
+                        Desenvolvedores
+                    </li>
+                    
+                </ul>
+            </nav>
+            <div class="clear"></div>
+            
 
-       <div class="description-container">
-            <div class='description-images-1-e-2'>
-                <section>
-                    <p> Caminhe pelo mapa para tentar explodir o seu oponente </p>
+        </header>
     
-                    <figure>
-                        <img src="img/multi.jpg" alt="opção multijogador"  width="400" height="300">
-                    </figure>
-                </section>
-    
-                <section>
-                    <p> Poderes espalhados pelo mapa te dão mais chances de vitória </p>
-    
-                    <figure>
-                        <img src="img/poderes.jpg" alt="poderes especiais" width="400" height="300">
-                    </figure>
-                </section>
-            </div>
+        <!-- <hr style="border: 1px solid rgb(165, 168, 207); margin: 70px 0;"> -->
+       <section id="descrição">
+        <h2> Descrição do jogo </h2>
+        <div class="description-container">
+                <div class='description-images-1-e-2'>
+                    <section>
+                        <p> Caminhe pelo mapa para tentar explodir o seu oponente </p>
+        
+                        <figure>
+                            <img src="img/multi.jpg" alt="opção multijogador"  width="400" height="300">
+                        </figure>
+                    </section>
+        
+                    <section>
+                        <p> Poderes pelo mapa te dão mais chances de vitória </p>
+        
+                        <figure>
+                            <img src="img/poderes.jpg" alt="poderes especiais" width="400" height="300">
+                        </figure>
+                    </section>
+                </div>
+        
 
             
             <div class='description-images-3-e-4'>
@@ -59,6 +97,7 @@
         </div>
             
        </div>
+    </section>
 
        <hr style="border: 1px solid rgb(165, 168, 207); margin: 70px 0;">
 
@@ -68,21 +107,21 @@
         <div class="poderes">
 
         <div class="border">
-        <p> O poder da bomba permite o jogador ter mais bombas para explodir </p>
+        <p> A bomba permite o jogador ter mais bombas para explodir </p>
         <figure>
             <img src="img/bomba.jpg" alt="bomba" width="200" height="150">
         </figure>
         </div>
 
         <div class="border">
-        <p> O poder do fogo permite que a explosão da bomba do jogador tenha maior alcance</p>
+        <p> O fogo permite que a explosão da bomba do jogador tenha maior alcance</p>
         <figure>
             <img src="img/fogo.jpg" alt="fogo" width="200" height="150">
         </figure>
         </div>
 
         <div>
-        <p> O poder do patins permite que o jogador tenha maior velocidade </p>
+        <p>  patins permite que o jogador tenha maior velocidade </p>
         <figure>
             <img src="img/velocidade.jpg" alt="velocidade" width="200" height="150">
         </figure>
@@ -92,19 +131,230 @@
 
     <hr style="border: 1px solid rgb(165, 168, 207); margin: 70px 0;">
 
+    <section id="video">
     <h2> Vídeo do jogo </h2>
     <iframe width="800" height="450" src="https://www.youtube.com/embed/9-E4u4fIsi0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         <hr style="border: 1px solid rgb(165, 168, 207); margin: 70px 0;">
+    </section>
+    
+        <!-- 
+    <div class="mudanças-do-site">
+        <h2> Mudanças do site </h2>
+        <div class="images_mudanças_1e2"
+            <section>
+                <p> Descrição do jogo incompleta </p>
+                <figure>
+                <img src="img/descrição velha.jpg" alt="descrição velha" width="400" height="300">
+                </figure>
+            </section>
+
+            <section>
+                <p> Adicionamos mais fotos com mais explicações. </p>
+                <figure>
+                <img src="img/descrição nova.jpg" alt="descrição velha" width="400" height="300">
+                </figure>
+            </section>
+
+        </div>
+        -->
+        
+        <h2>Avaliação heurística</h2>
+
+        <div class="avaliação">
+            <div class="border-avaliação">
+                <h3>Primeira Mudança</h3>
+            <div class='avaliação-1-e-2'>
+                
+                <section>
+                    <p> A descrição do jogo estava incompleta. </p>
+    
+                    <figure>
+                        <img src="img/descrição velha.jpg" alt="descrição velha"  width="500" height="400">
+                    </figure>
+                </section>
+    
+                <section>
+                    <p> Adicionamos mais fotos com mais explicações. </p>
+    
+                    <figure>
+                        <img src="img/descrição nova.jpg" alt="descrição nova" width="500" height="400">
+                    </figure>
+                </section>
+            </div>
+        </div>
+            <div class="border-avaliação">
+                <h3>Segunda Mudança</h3>
+            <div class='avaliação-3-e-4'>
+                <section>
+                    <p> O título poderia ser a imagem usada na tela Menu do jogo. </p>
+        
+                    <figure>
+                        <img src="img/descrição velha.jpg" alt="titulo velho" width="500" height="400">
+                    </figure>
+                </section>
+    
+                <section>
+                    <p> Colocamos a imagem usada no jogo. </p>
+        
+                    <figure>
+                        <img src="img/imagem_jogo.jpg" alt="imagem do jogo" width="500" height="400">
+                    </figure>
+                </section>
+            </div>
+            </div>
+            <div class="border-avaliação">
+                <h3>Terceira Mudança</h3>
+                <div class='avaliação-5-e-6'>
+                    <section>
+                        <p> A cor do fundo verde não combinava com o jogo. </p>
+            
+                        <figure>
+                            <img src="img/descrição velha.jpg" alt="fundo verde" width="500" height="400">
+                        </figure>
+                    </section>
+        
+                    <section>
+                        <p> Trocamos para um azul, cor do fundo do jogo </p>
+            
+                        <figure>
+                            <img src="img/descrição nova.jpg" alt="fundo azul" width="500" height="400">
+                        </figure>
+                    </section>
+                </div>
+                </div>
+                <div class="border-avaliação">
+                    <h3>Quarta Mudança</h3>
+                    <div class='avaliação-7-e-8'>
+                        <section>
+                            <p> Poderes na horizontal não estavam estéticos. </p>
+                
+                            <figure>
+                                <img src="img/poderes velhos.jpg" alt="poderes velhos" width="500" height="400">
+                            </figure>
+                        </section>
+            
+                        <section>
+                            <p> Trocamos a disposição para horizontal </p>
+                
+                            <figure>
+                                <img src="img/poderes novos.jpg" alt="poderes novos" width="500" height="400">
+                            </figure>
+                        </section>
+                    </div>
+                    </div>
+                    <div class="border-avaliação">
+                        <h3>Quinta Mudança</h3>
+                        <div class='avaliação-9-e-10'>
+                            <section>
+                                <p> separar o site em pequenos blocos por linhas. </p>
+                    
+                                <figure>
+                                    <img src="img/video velho.jpg" alt="video velho" width="500" height="400">
+                                </figure>
+                            </section>
+                
+                            <section>
+                                <p> As linhas foram colocadas para cada parte do site. </p>
+                    
+                                <figure>
+                                    <img src="img/video_jogo.jpg" alt="video novo" width="500" height="400">
+                                </figure>
+                            </section>
+                        </div>
+                        </div>
+        </div>
 
 
 
-        <h2> Membros do grupo</h2>
+        <hr style="border: 1px solid rgb(165, 168, 207); margin: 70px 0;">
 
-       <ul>
-        <li>Daniel Prado</li>
-        <li>Diego Yamashitafuji</li>
-       </ul>
-		
+        <section id="histórico">
+            <h2>Histórico</h2>
+
+            <div class="tabela-container">
+                <table>
+                  <tr>
+                    <td class="coluna1">24/04/2023</td>
+                    <td class="coluna2">Diego cria a primeira versão do Menu</td>
+                  </tr>
+                  <tr>
+                    <td class="coluna1">24/03/2023</td>
+                    <td class="coluna2">Daniel cria o primeiro código do site</td>
+                  </tr>
+                  <tr>
+                    <td class="coluna1">25/04/2023</td>
+                    <td class="coluna2">Diego cria a classe jogador</td>
+                  </tr>
+                  <tr>
+                    <td class="coluna1">25/04/2023</td>
+                    <td class="coluna2">Daniel atualiza a tela inicial do jogo</td>
+                  </tr>
+                  <tr>
+                    <td class="coluna1">26/04/2023</td>
+                    <td class="coluna2">Diego implementa movimentação do jogador</td>
+                  </tr>
+                  <tr>
+                    <td class="coluna1">26/04/2023</td>
+                    <td class="coluna2">Daniel cria a tela de scoreboard</td>
+                  </tr>
+                  <tr>
+                    <td class="coluna1">27/04/2023</td>
+                    <td class="coluna2">Diego adiciona animação da sprite</td>
+                  </tr>
+                  <tr>
+                    <td class="coluna1">28/03/2023</td>
+                    <td class="coluna2">Daniel atualiza o site com as mudanças sugeridas </td>
+                  </tr>
+                  <tr>
+                    <td class="coluna1">29/04/2023</td>
+                    <td class="coluna2">Diego refatora a classe blocos e a classe jogador</td>
+                  </tr>
+                  <tr>
+                    <td class="coluna1">30/04/2023</td>
+                    <td class="coluna2">Diego adiciona as sprites da bomba e reformula o mapa </td>
+                  </tr>
+                  <tr>
+                    <td class="coluna1">30/04/2023</td>
+                    <td class="coluna2">Daniel cria o histórico de desenvolvimento</td>
+                  </tr>
+                  <tr>
+                    <td class="coluna1">30/04/2023</td>
+                    <td class="coluna2">Daniel cria a aba de Desenvolvedoresdo jogo</td>
+                  </tr>
+                </table>
+              </div>
+              
+              
+
+              
+        </section>
+
+        <hr style="border: 1px solid rgb(165, 168, 207); margin: 70px 0;">
+
+        <section id="Desenvolvedores">
+        <h2> Desenvolvedores</h2>
+        
+        <div class="image-container">
+            <div class="image-box">
+              <img src="img/daniel.jpg" class="rounded-image">
+              <p>Daniel Prado tem 24 anos e estuda Ciência da Computação no Insper</p>
+              <a href="https://www.instagram.com/danz_prado/"><img src="img/instagram.png " width="30" height="30" alt="Instagram"></a>
+              <a href="https://github.com/danielprado99"><img src="img/github.png" width="30" height="30" alt="Github"></a>
+              <a href="https://www.linkedin.com/in/daniel-prado-013710268/"><img src="img/linkedin.png" width="30" height="30" alt="Linkedin"></a>
+            </div>
+            <div class="image-box">
+              <img src="img/paul.jpg" class="rounded-image">
+              <p>Diego Yamashitafuji tem 18 anos e estuda Ciência da Computação no Insper</p>
+              <a target="_blank" href="https://www.instagram.com/diegoyamashitafuji/"><img src="img/instagram.png " width="30" height="30" alt="Instagram"></a>
+              <a href="https://github.com/danielprado99"><img src="img/github.png" width="30" height="30" alt="Github"></a>
+              <a href="https://www.linkedin.com/in/daniel-prado-013710268/"><img src="img/linkedin.png" width="30" height="30" alt="Linkedin"></a>
+            </div>
+          </div>
+       </section>
+
+       <hr style="border: 1px solid rgb(165, 168, 207); margin: 70px 0;">
 
     </body>
+    <script scr="js/script.js"></script>
 </html>
+

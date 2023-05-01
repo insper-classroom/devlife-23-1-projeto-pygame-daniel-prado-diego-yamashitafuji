@@ -5,27 +5,89 @@
 
 *{
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  color: #E8D030;
 }
+
+html,body {
+  height: 100%;
+}
+
 
 body {
     font-family: 'fontejogo' , cursive;
-    background-color: #89bed8;
+    background-color:#0033cc ;
     text-align: center;
+    scroll-behavior: smooth;
   }
+
+
   
+header {
+  width: 100%;
+  background-color: #0033cc;
+  height: 10%;
+  position: fixed;
+}
+
+.logo {
+  width: 12%;
+  height: 100%;
+  float: left;
+  background-image: url('img/bomber_title.png');
+  background-size: 100% 100%;
+  
+}
+
+nav{
+  float: right;
+  width: 80%;
+  padding-top:2.5%;
+  text-align: right;
+}
+
+
+.clear {
+  clear:both;
+}
+
+nav ul li {
+  display: inline-block;
+  margin-right: 4%;
+  cursor: pointer;
+
+}
+
+#descrição {
+ width: 100%;
+ padding-top: 10%; 
+}
+
+#descrição section {
+  border: solid 10px #0033cc00;
+}
 
   h2 {
     font-family: 'fontejogo';
-    font-size: 64px
+    font-size: 64px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
   }
 
   h3 {
-    font-family: 'Retro Gaming', cursive;
+    font-family: 'fontejogo', cursive;
+    margin: 20px;
+  }
+
+  ul {
+    list-style: none;
   }
   
   p {
     font-family: Arial, Helvetica, sans-serif, cursive;
     font-size: 16px;
+    margin: 20px 0;
   }
 
   video {
@@ -44,21 +106,97 @@ body {
   display: flex;
   width: 100%;
   justify-content: center;
-  text-align: start;
+  text-align: center;
 }
 
 .poderes div{
   padding: 20px;
 }
 
-.border {
-  border-right: 1px solid black;
-}
-
-footer {
+.avaliação{
+  display: flex;
   width: 100%;
-  padding-top: 5px;
-  height: 222PX;
-  background-color: #5b45cb
+  justify-content: center;
+  display: block;
 }
 
+.avaliação .avaliação-1-e-2 {
+  display: inline-flex;
+  margin-bottom: 10px;
+ 
+}
+
+.avaliação figure{
+  margin: 20px;
+}
+
+.avaliação .avaliação-3-e-4{
+  display: inline-flex;
+  margin-bottom: 10px;
+}
+
+.avaliação .avaliação-5-e-6{
+  display: inline-flex;
+  margin-bottom: 10px;
+}
+
+.avaliação .avaliação-7-e-8{
+  display: inline-flex;
+  margin-bottom: 10px;
+}
+
+.avaliação .avaliação-9-e-10{
+  display: inline-flex;
+  margin-bottom: 10px;
+}
+
+
+.border {
+  border-right: 1px solid rgb(165, 168, 207);
+}
+
+/* .border-avaliação {
+  border: 1px solid rgb(165, 168, 207);
+  margin-bottom: 10px;
+  background-color: #0033cc;
+} */
+
+#video {
+  width: 100%;
+}
+
+.image-container {
+  display: flex;
+}
+
+.image-box {
+  text-align: center;
+  margin: 0 auto;
+}
+
+.rounded-image {
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+}
+
+.tabela-container {
+  margin: 0 150px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.coluna1 {
+  width: 20%;
+  height: 50px;
+  border: 1px solid rgb(165, 168, 207);
+}
+
+.coluna2 {
+  width: 80%;
+  height: 50px;
+  border: 1px solid rgb(165, 168, 207);
+}
