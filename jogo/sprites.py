@@ -53,7 +53,7 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         # Parametros dos jogadores
         self.estoque_bomba = 2
-        self.alcance_bomba = 2
+        self.alcance_bomba = 5
         self.bombas = pygame.sprite.Group()
         # Inicializa estado dos jogadores
         self.sprite_size = estado_jogo.sprite_size
@@ -250,34 +250,35 @@ class Bomb(pygame.sprite.Sprite):
         estado_jogo.bombas.remove(self)
         estado_jogo.jogador_um.estoque_bomba += 1
         # Constroe a explosao
-        estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x, self.rect.y, 0, 'leste'))  # Desenha o centro da explosao
+        tick_inicial = pygame.time.get_ticks()
+        estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x, self.rect.y, 0, 'leste', tick_inicial))  # Desenha o centro da explosao
         for i in range(1, self.alcance + 1):
             if i == self.alcance:
                 fase = 2
             else:
                 fase = 1
-            estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x + self.width * i, self.rect.y, fase, 'leste'))  # ... o leste
+            estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x + self.width * i, self.rect.y, fase, 'leste', tick_inicial))  # ... o leste
         for i in range(1, self.alcance + 1):
             if i == self.alcance:
                 fase = 2
             else:
                 fase = 1
-            estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x , self.rect.y - self.height * i, fase, 'norte'))  # ... o norte
+            estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x , self.rect.y - self.height * i, fase, 'norte', tick_inicial))  # ... o norte
         for i in range(1, self.alcance + 1):
             if i == self.alcance:
                 fase = 2
             else:
                 fase = 1
-            estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x - self.width * i, self.rect.y, fase, 'oeste'))  # ... o oeste
+            estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x - self.width * i, self.rect.y, fase, 'oeste', tick_inicial))  # ... o oeste
         for i in range(1, self.alcance + 1):
             if i == self.alcance:
                 fase = 2
             else:
                 fase = 1
-            estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x , self.rect.y + self.height * i, fase, 'sul'))  # ... o sul
+            estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x , self.rect.y + self.height * i, fase, 'sul', tick_inicial))  # ... o sul
 
 class Explosao(pygame.sprite.Sprite):
-    def __init__(self, estado_jogo, x, y, parte, orientacao):
+    def __init__(self, estado_jogo, x, y, parte, orientacao, tick_inicial):
         pygame.sprite.Sprite.__init__(self)
 
         self.width = estado_jogo.sprite_size[0]
@@ -300,17 +301,39 @@ class Explosao(pygame.sprite.Sprite):
              pygame.transform.scale(pygame.image.load('assets/Explosao/ExplosaoE/explosionE_1.png'), (self.width, self.height)),
              pygame.transform.scale(pygame.image.load('assets/Explosao/ExplosaoE/explosionE_2.png'), (self.width, self.height)),],
         ]
-        ind_fase_explosao = 0
         if orientacao == 'leste':
-            graus_de_inclinacao = 0
+            self.inclinacao = 0
         if orientacao == 'norte':
-            graus_de_inclinacao = 90
+            self.inclinacao = 90
         elif orientacao == 'oeste':
-            graus_de_inclinacao = 180
+            self.inclinacao = 180
         elif orientacao == 'sul':
-            graus_de_inclinacao = 270
-        self.image = pygame.transform.rotate(self.sprite_sheet[ind_fase_explosao][parte], graus_de_inclinacao)
+            self.inclinacao = 270
+        self.ind_fase = 0
+        self.ind_parte = parte
+        self.image = pygame.transform.rotate(self.sprite_sheet[self.ind_fase][self.ind_parte], self.inclinacao)
         # Inicializa parametros da explosao
+        self.tempo_explosao = 10000  # Tempo da explosao em milisegundos
+        self.tick_inicial = tick_inicial
+        self.ind_fase = 0
+        self.contador = 0
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+    def update(self, estado_jogo):  # consertar a animaacao
+        
+        if self.contador < 5:
+            if estado_jogo.tick_atual > self.tick_inicial + self.tempo_explosao * (self.ind_fase + 1) / 10:  # Cresce a animacao de explosao
+                self.ind_fase += 1
+                self.contador += 1
+                self.image = pygame.transform.rotate(self.sprite_sheet[self.ind_fase - 1][self.ind_parte], self.inclinacao)
+        elif self.contador < 10:
+            if estado_jogo.tick_atual > self.tick_inicial + self.tempo_explosao * (self.ind_fase + 1) / 10:  # Decresce a animacao de explosao
+                self.ind_fase -= 1
+                self.contador += 1
+                self.image = pygame.transform.rotate(self.sprite_sheet[self.ind_fase - 1][self.ind_parte], self.inclinacao)
+        elif self.contador >= 10:
+            estado_jogo.explosoes.remove(self)  # Remove a explosao
+            
+            

@@ -199,6 +199,7 @@ class TelaJogo:
                     
         self.jogadores.update(self)
         self.bombas.update(self)
+        self.explosoes.update(self)
         return self
 
 
