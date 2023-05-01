@@ -88,7 +88,7 @@ class TelaJogo:
         self.sprite_size = [50, 50]  # Tamanho horizontal e vertical em pixels das sprites
         #  Inicializa parametros do mapa
         self.n_blocos_internos = [6, 5]  # N horizontal e N vertical
-        self.n_blocos_quebraveis = 0
+        self.n_blocos_quebraveis = 30
         self.largura_mapa = (self.n_blocos_internos[0] * 2 + 3) * self.sprite_size[0]
         self.altura_mapa = (self.n_blocos_internos[1] * 2 + 3) * self.sprite_size[1]
         self.mapa = Mapa(self)
@@ -200,6 +200,7 @@ class TelaJogo:
         self.jogadores.update(self)
         self.bombas.update(self)
         self.explosoes.update(self)
+        self.blocos.update(self)
         return self
 
 
