@@ -36,7 +36,10 @@
                         Histórico
                     </li>
 
-                    <li>
+                    <li onclick="window.scrollTo({
+                        top: document.getElementById('download').getBoundingClientRect().top + window.pageYOffset - document.querySelector('header').offsetHeight,
+                        behavior: 'smooth'
+                    })">
                         Download
                     </li>
 
@@ -54,7 +57,6 @@
 
         </header>
     
-        <!-- <hr style="border: 1px solid rgb(165, 168, 207); margin: 70px 0;"> -->
        <section id="descrição">
         <h2> Descrição do jogo </h2>
         <div class="description-container">
@@ -76,8 +78,6 @@
                     </section>
                 </div>
         
-
-            
             <div class='description-images-3-e-4'>
             <section>
                 <p> Encurrale seu inimigo para explodí-lo </p>
@@ -134,29 +134,9 @@
     <section id="video">
     <h2> Vídeo do jogo </h2>
     <iframe width="800" height="450" src="https://www.youtube.com/embed/9-E4u4fIsi0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
         <hr style="border: 1px solid rgb(165, 168, 207); margin: 70px 0;">
     </section>
-    
-        <!-- 
-    <div class="mudanças-do-site">
-        <h2> Mudanças do site </h2>
-        <div class="images_mudanças_1e2"
-            <section>
-                <p> Descrição do jogo incompleta </p>
-                <figure>
-                <img src="img/descrição velha.jpg" alt="descrição velha" width="400" height="300">
-                </figure>
-            </section>
-
-            <section>
-                <p> Adicionamos mais fotos com mais explicações. </p>
-                <figure>
-                <img src="img/descrição nova.jpg" alt="descrição velha" width="400" height="300">
-                </figure>
-            </section>
-
-        </div>
-        -->
         
         <h2>Avaliação heurística</h2>
 
@@ -182,6 +162,7 @@
                 </section>
             </div>
         </div>
+
             <div class="border-avaliação">
                 <h3>Segunda Mudança</h3>
             <div class='avaliação-3-e-4'>
@@ -202,6 +183,7 @@
                 </section>
             </div>
             </div>
+
             <div class="border-avaliação">
                 <h3>Terceira Mudança</h3>
                 <div class='avaliação-5-e-6'>
@@ -222,6 +204,7 @@
                     </section>
                 </div>
                 </div>
+
                 <div class="border-avaliação">
                     <h3>Quarta Mudança</h3>
                     <div class='avaliação-7-e-8'>
@@ -242,6 +225,7 @@
                         </section>
                     </div>
                     </div>
+
                     <div class="border-avaliação">
                         <h3>Quinta Mudança</h3>
                         <div class='avaliação-9-e-10'>
@@ -321,33 +305,56 @@
                     <td class="coluna1">30/04/2023</td>
                     <td class="coluna2">Daniel cria a aba de Desenvolvedoresdo jogo</td>
                   </tr>
+                  <tr>
+                    <td class="coluna1">01/05/2023</td>
+                    <td class="coluna2">Diego atualiza animação da bomba</td>
+                  </tr>
+                  <tr>
+                    <td class="coluna1">01/05/2023</td>
+                    <td class="coluna2">Daniel atualiza a aba de desenvolvedores</td>
+                  </tr>
                 </table>
               </div>
-              
-              
-
               
         </section>
 
         <hr style="border: 1px solid rgb(165, 168, 207); margin: 70px 0;">
 
+        <section id="download">
+            <h2>Download</h2>
+
+        </section>
+
+        <hr style="border: 1px solid rgb(165, 168, 207); margin: 70px 0;">
+
+        <section id="instruções">
+            <h2>Instruções</h2>
+
+        </section>
+
+        <hr style="border: 1px solid rgb(165, 168, 207); margin: 70px 0;">
+
+
+
         <section id="Desenvolvedores">
         <h2> Desenvolvedores</h2>
         
         <div class="image-container">
+            
             <div class="image-box">
               <img src="img/daniel.jpg" class="rounded-image">
               <p>Daniel Prado tem 24 anos e estuda Ciência da Computação no Insper</p>
-              <a href="https://www.instagram.com/danz_prado/"><img src="img/instagram.png " width="30" height="30" alt="Instagram"></a>
-              <a href="https://github.com/danielprado99"><img src="img/github.png" width="30" height="30" alt="Github"></a>
-              <a href="https://www.linkedin.com/in/daniel-prado-013710268/"><img src="img/linkedin.png" width="30" height="30" alt="Linkedin"></a>
+              <a target="_blank" href="https://www.instagram.com/danz_prado/"><img src="img/instagram.png " width="30" height="30" alt="Instagram"></a>
+              <a target="_blank" href="https://github.com/danielprado99"><img src="img/github.png" width="30" height="30" alt="Github"></a>
+              <a target="_blank" href="https://www.linkedin.com/in/daniel-prado-013710268/"><img src="img/linkedin.png" width="30" height="30" alt="Linkedin"></a>
             </div>
+
             <div class="image-box">
               <img src="img/paul.jpg" class="rounded-image">
               <p>Diego Yamashitafuji tem 18 anos e estuda Ciência da Computação no Insper</p>
               <a target="_blank" href="https://www.instagram.com/diegoyamashitafuji/"><img src="img/instagram.png " width="30" height="30" alt="Instagram"></a>
-              <a href="https://github.com/danielprado99"><img src="img/github.png" width="30" height="30" alt="Github"></a>
-              <a href="https://www.linkedin.com/in/daniel-prado-013710268/"><img src="img/linkedin.png" width="30" height="30" alt="Linkedin"></a>
+              <a target="_blank" href="https://github.com/diegohy-sk/"><img src="img/github.png" width="30" height="30" alt="Github"></a>
+              <a target="_blank" href="https://www.linkedin.com/in/daniel-prado-013710268/"><img src="img/linkedin.png" width="30" height="30" alt="Linkedin"></a>
             </div>
           </div>
        </section>
