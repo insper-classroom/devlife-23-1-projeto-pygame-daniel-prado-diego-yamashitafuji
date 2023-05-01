@@ -75,8 +75,8 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, estado_jogo, x, y):
         pygame.sprite.Sprite.__init__(self)
         # Parametros dos jogadores
-        self.estoque_bomba = 2
-        self.alcance_bomba = 2
+        self.estoque_bomba = 1
+        self.alcance_bomba = 1
         self.bombas = pygame.sprite.Group()
         # Inicializa estado dos jogadores
         self.sprite_size = estado_jogo.sprite_size
@@ -100,13 +100,13 @@ class Player(pygame.sprite.Sprite):
         # Atualiza a velodcidade do jogador
         if self.esta_movendo:
             if self.direcao == 'norte':
-                self.vel = [0, -400]
+                self.vel = [0, -250]
             elif self.direcao == 'oeste':
-                self.vel = [-400, 0]
+                self.vel = [-250, 0]
             elif self.direcao == 'sul':
-                self.vel = [0, 400]
+                self.vel = [0, 250]
             elif self.direcao == 'leste':
-                self.vel = [400, 0] 
+                self.vel = [250, 0] 
         else:
             self.vel = [0, 0]
         # Atualiza a posicao do jogador
