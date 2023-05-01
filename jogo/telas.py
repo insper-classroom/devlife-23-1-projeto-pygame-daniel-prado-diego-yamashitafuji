@@ -155,8 +155,8 @@ class TelaJogo:
         self.mapa.fill((0,100,0))
         # Desenha os blocos
         self.blocos.draw(self.mapa)
-        self.explosoes.draw(self.mapa)
         self.bombas.draw(self.mapa)
+        self.explosoes.draw(self.mapa)
         # Desenha os players
         for player in self.jogadores.sprites():
             self.mapa.blit(player.image, (player.rect.x, player.rect.y - (player.height - self.sprite_size[1])))

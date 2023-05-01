@@ -53,7 +53,7 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         # Parametros dos jogadores
         self.estoque_bomba = 2
-        self.alcance_bomba = 5
+        self.alcance_bomba = 2
         self.bombas = pygame.sprite.Group()
         # Inicializa estado dos jogadores
         self.sprite_size = estado_jogo.sprite_size
@@ -251,31 +251,31 @@ class Bomb(pygame.sprite.Sprite):
         estado_jogo.jogador_um.estoque_bomba += 1
         # Constroe a explosao
         tick_inicial = pygame.time.get_ticks()
-        estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x, self.rect.y, 0, 'leste', tick_inicial))  # Desenha o centro da explosao
-        for i in range(1, self.alcance + 1):
-            if i == self.alcance:
-                fase = 2
-            else:
-                fase = 1
-            estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x + self.width * i, self.rect.y, fase, 'leste', tick_inicial))  # ... o leste
-        for i in range(1, self.alcance + 1):
-            if i == self.alcance:
-                fase = 2
-            else:
-                fase = 1
-            estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x , self.rect.y - self.height * i, fase, 'norte', tick_inicial))  # ... o norte
-        for i in range(1, self.alcance + 1):
-            if i == self.alcance:
-                fase = 2
-            else:
-                fase = 1
-            estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x - self.width * i, self.rect.y, fase, 'oeste', tick_inicial))  # ... o oeste
-        for i in range(1, self.alcance + 1):
-            if i == self.alcance:
-                fase = 2
-            else:
-                fase = 1
-            estado_jogo.explosoes.add(Explosao(estado_jogo, self.rect.x , self.rect.y + self.height * i, fase, 'sul', tick_inicial))  # ... o sul
+        for a in range(5):
+            i = 0
+            colide_parede = False
+            while i < self.alcance and not colide_parede:
+                i += 1
+                if i == self.alcance:
+                    fase = 2
+                else:
+                    fase = 1
+                if a == 0:
+                    explosao = Explosao(estado_jogo, self.rect.x, self.rect.y, 0, 'leste', tick_inicial)  # Desenha o centro da explosao
+                if a == 1:
+                    explosao = Explosao(estado_jogo, self.rect.x + self.width * i, self.rect.y, fase, 'leste', tick_inicial)  # ... o leste
+                elif a == 2:
+                    explosao = Explosao(estado_jogo, self.rect.x , self.rect.y - self.height * i, fase, 'norte', tick_inicial)  # ... o norte
+                elif a == 3:
+                    explosao = Explosao(estado_jogo, self.rect.x - self.width * i, self.rect.y, fase, 'oeste', tick_inicial)  # ... o oeste
+                elif a == 4:
+                    explosao = Explosao(estado_jogo, self.rect.x , self.rect.y + self.height * i, fase, 'sul', tick_inicial)  # ... o sul
+
+                if len(pygame.sprite.spritecollide(explosao, estado_jogo.blocos, False)) > 0:
+                    colide_parede = True
+                else:
+                    estado_jogo.explosoes.add(explosao)  # ... o leste
+                    
 
 class Explosao(pygame.sprite.Sprite):
     def __init__(self, estado_jogo, x, y, parte, orientacao, tick_inicial):
