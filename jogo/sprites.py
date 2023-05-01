@@ -313,27 +313,24 @@ class Explosao(pygame.sprite.Sprite):
         self.ind_parte = parte
         self.image = pygame.transform.rotate(self.sprite_sheet[self.ind_fase][self.ind_parte], self.inclinacao)
         # Inicializa parametros da explosao
-        self.tempo_explosao = 10000  # Tempo da explosao em milisegundos
+        self.tempo_explosao = 1000  # Tempo da explosao em milisegundos
         self.tick_inicial = tick_inicial
         self.ind_fase = 0
-        self.contador = 0
+        self.contador = 1
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
-    def update(self, estado_jogo):  # consertar a animaacao
-        
+    def update(self, estado_jogo):  # Consertar a animaacao
         if self.contador < 5:
-            if estado_jogo.tick_atual > self.tick_inicial + self.tempo_explosao * (self.ind_fase + 1) / 10:  # Cresce a animacao de explosao
+            if estado_jogo.tick_atual > self.tick_inicial + self.tempo_explosao * self.contador / 10:
                 self.ind_fase += 1
                 self.contador += 1
-                self.image = pygame.transform.rotate(self.sprite_sheet[self.ind_fase - 1][self.ind_parte], self.inclinacao)
+                self.image = pygame.transform.rotate(self.sprite_sheet[self.ind_fase][self.ind_parte], self.inclinacao)
         elif self.contador < 10:
-            if estado_jogo.tick_atual > self.tick_inicial + self.tempo_explosao * (self.ind_fase + 1) / 10:  # Decresce a animacao de explosao
+            if estado_jogo.tick_atual > self.tick_inicial + self.tempo_explosao * self.contador / 10:
                 self.ind_fase -= 1
                 self.contador += 1
-                self.image = pygame.transform.rotate(self.sprite_sheet[self.ind_fase - 1][self.ind_parte], self.inclinacao)
-        elif self.contador >= 10:
+                self.image = pygame.transform.rotate(self.sprite_sheet[self.ind_fase][self.ind_parte], self.inclinacao)
+        else:
             estado_jogo.explosoes.remove(self)  # Remove a explosao
-            
-            
