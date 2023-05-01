@@ -17,7 +17,7 @@ class Block(pygame.sprite.Sprite):
         # Inicializa o estado do bloco
         self.estado = False  # False para nao quebrado, True para quebrado
         self.tick_inicial = 0
-        self.tempo_animacao = 1000  # Tempo da animacao em milisegundos
+        self.tempo_animacao = 500  # Tempo da animacao em milisegundos
 
     def update(self, estado_jogo):
         if self.estado and self.tick_inicial == 0:
@@ -77,9 +77,8 @@ class Player(pygame.sprite.Sprite):
         # Parametros dos jogadores
         self.estoque_bomba = 1
         self.alcance_bomba = 1
-        self.bombas = pygame.sprite.Group()
+        self.contante_velocidade = 300
         # Inicializa estado dos jogadores
-        self.sprite_size = estado_jogo.sprite_size
         self.sprite_width = estado_jogo.sprite_size[0]
         self.sprite_height = estado_jogo.sprite_size[1]
         self.tick_anterior = 0
@@ -88,7 +87,7 @@ class Player(pygame.sprite.Sprite):
         self.esta_movendo = False
         self.i_imagem = 0
         self.tick_inicial = 0 # Tick inicial da animacao
-        self.frequencia = 20  # Frequencia da animacao em hertz
+        self.frequencia = 6  # Frequencia da animacao em hertz
         # Inicializa surface e rect do player
         self.image = self.sprite_sheet[self.direcao][self.i_imagem]
         self.rect = pygame.Rect(0, 0, estado_jogo.sprite_size[0], estado_jogo.sprite_size[1])
@@ -100,13 +99,13 @@ class Player(pygame.sprite.Sprite):
         # Atualiza a velodcidade do jogador
         if self.esta_movendo:
             if self.direcao == 'norte':
-                self.vel = [0, -250]
+                self.vel = [0, -self.contante_velocidade]
             elif self.direcao == 'oeste':
-                self.vel = [-250, 0]
+                self.vel = [-self.contante_velocidade, 0]
             elif self.direcao == 'sul':
-                self.vel = [0, 250]
+                self.vel = [0, self.contante_velocidade]
             elif self.direcao == 'leste':
-                self.vel = [250, 0] 
+                self.vel = [self.contante_velocidade, 0] 
         else:
             self.vel = [0, 0]
         # Atualiza a posicao do jogador
@@ -170,12 +169,13 @@ class Player(pygame.sprite.Sprite):
             self.estoque_bomba -= 1
             pos_x_arredondado = round(self.rect.x / self.sprite_width) * self.sprite_width
             pos_y_arredondado = round(self.rect.y / self.sprite_height) * self.sprite_height
-            estado_jogo.bombas.add(Bomb(pos_x_arredondado, pos_y_arredondado, estado_jogo, self.alcance_bomba))
+            estado_jogo.bombas.add(Bomb(self.cor, pos_x_arredondado, pos_y_arredondado, estado_jogo, self.alcance_bomba))
 
 
 class PlayerWhite(Player):
     def __init__(self, estado_jogo, x, y):
         self.width, self.height = estado_jogo.sprite_size[0], estado_jogo.sprite_size[1] * 1.6
+        self.cor = 'white'
         self.sprite_sheet = {
             'norte': [
                 pygame.transform.scale(pygame.image.load('assets/PlayerBranco/BrancoNorte/branconorte_0.png'), (self.width, self.height)),
@@ -208,7 +208,9 @@ class PlayerWhite(Player):
 
 
 class PlayerBlack(Player):
-    def __init__(self, sprite_width, sprite_height):
+    def __init__(self, estado_jogo, x, y):
+        self.width, self.height = estado_jogo.sprite_size[0], estado_jogo.sprite_size[1] * 1.6
+        self.cor = 'black'
         self.sprite_sheet = {
             'norte': [
                 pygame.transform.scale(pygame.image.load('assets/PlayerPreto/PretoNorte/pretonorte_0.png'), (self.width, self.height)),
@@ -230,15 +232,18 @@ class PlayerBlack(Player):
             ],
             'leste': [
                 pygame.transform.scale(pygame.image.load('assets/PlayerPreto/PretoLeste/pretoleste_0.png'), (self.width, self.height)),
-                pygame.transform.scale(pygame.image.load('assets/PlayerPreto/PretoLeste/pretoleste_0.png'), (self.width, self.height)),
-                pygame.transform.scale(pygame.image.load('assets/PlayerPreto/PretoLeste/pretoleste_0.png'), (self.width, self.height)),
-                pygame.transform.scale(pygame.image.load('assets/PlayerPreto/PretoLeste/pretoleste_0.png'), (self.width, self.height)),
+                pygame.transform.scale(pygame.image.load('assets/PlayerPreto/PretoLeste/pretoleste_1.png'), (self.width, self.height)),
+                pygame.transform.scale(pygame.image.load('assets/PlayerPreto/PretoLeste/pretoleste_2.png'), (self.width, self.height)),
+                pygame.transform.scale(pygame.image.load('assets/PlayerPreto/PretoLeste/pretoleste_3.png'), (self.width, self.height)),
             ],
         }
 
+        Player.__init__(self, estado_jogo, x, y)
+        estado_jogo.jogadores.add(self)
+
 
 class Bomb(pygame.sprite.Sprite):
-    def __init__(self, x, y, estado_jogo, alcance):
+    def __init__(self, player, x, y, estado_jogo, alcance):
         pygame.sprite.Sprite.__init__(self)
         self.width = estado_jogo.sprite_size[0]
         self.height = estado_jogo.sprite_size[1]
@@ -258,6 +263,7 @@ class Bomb(pygame.sprite.Sprite):
         # Inicializa parametros da bomba
         self.tick_inicial = pygame.time.get_ticks()
         self.alcance = alcance
+        self.player = player
 
 
     def update(self, estado_jogo):
@@ -271,7 +277,10 @@ class Bomb(pygame.sprite.Sprite):
 
     def explode_bomba(self, estado_jogo):
         estado_jogo.bombas.remove(self)
-        estado_jogo.jogador_um.estoque_bomba += 1
+        if self.player == 'white': 
+            estado_jogo.jogador_um.estoque_bomba += 1
+        elif self.player == 'black':
+            estado_jogo.jogador_dois.estoque_bomba += 1
         # Constroe a explosao
         tick_inicial = pygame.time.get_ticks()
         for a in range(5):
@@ -340,7 +349,7 @@ class Explosao(pygame.sprite.Sprite):
         self.ind_parte = parte
         self.image = pygame.transform.rotate(self.sprite_sheet[self.ind_fase][self.ind_parte], self.inclinacao)
         # Inicializa parametros da explosao
-        self.tempo_explosao = 1000  # Tempo da explosao em milisegundos
+        self.tempo_explosao = 500  # Tempo da explosao em milisegundos
         self.tick_inicial = tick_inicial
         self.ind_fase = 0
         self.contador = 1
