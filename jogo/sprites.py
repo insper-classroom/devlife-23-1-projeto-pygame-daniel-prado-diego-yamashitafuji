@@ -40,9 +40,7 @@ class UnbreakBlock(Block):
         self.y = y
         self.eh_quebravel = False 
         # Inicializa imagem
-        imagem_w, imagem_h = pygame.image.load('assets/Blocos/blocoinquebravel.png').get_size()
-        imagem_res = imagem_w / imagem_h  # Devido a sombra contida na imagem, é necessário compensar o tamanho exedente
-        self.image = pygame.transform.scale(pygame.image.load('assets/Blocos/blocoinquebravel.png'), (self.width, self.height * imagem_res ** -1))
+        self.image = pygame.transform.scale(pygame.image.load('assets/Blocos/blocoinquebravel.png'), (self.width, self.height))
 
         Block.__init__(self)
 
@@ -77,7 +75,12 @@ class Player(pygame.sprite.Sprite):
         # Parametros dos jogadores
         self.estoque_bomba = 1
         self.alcance_bomba = 1
+<<<<<<< HEAD
         self.constante_velocidade = 300
+=======
+        self.constante_velocidade = 250
+        self.chuta = False
+>>>>>>> 082243b16b4b7d683c1f4b18f0cfa4b6d5afee18
         # Parametros da imagem
         self.sprite_width = estado_jogo.sprite_size[0]
         self.sprite_height = estado_jogo.sprite_size[1]
@@ -87,8 +90,8 @@ class Player(pygame.sprite.Sprite):
         self.tick_anterior = 0
         self.vel = [0, 0]
         # Parametros de animacao
-        self.flag1 = True
-        self.flag2 = True
+        self.flag_morte = True
+        self.flag_andar = True
         self.contador = 0
         self.tick_animacao = 0 # Tick inicial da animacao
         self.freq_animacao = 6  # Frequencia da animacao em hertz
@@ -164,12 +167,27 @@ class Player(pygame.sprite.Sprite):
         # Colisao com explosao
         if len(pygame.sprite.spritecollide(self, estado_jogo.explosoes, False)) > 0:
             self.estado = ['morte', False]
+        if len(pygame.sprite.spritecollide(self, estado_jogo.powerups, False)) > 0:
+            powerup_colidido = pygame.sprite.spritecollide(self, estado_jogo.powerups, False)[0]
+            if powerup_colidido.tipo == 'estoque':
+                self.estoque_bomba += 1
+                estado_jogo.powerups.remove(powerup_colidido)
+            elif powerup_colidido.tipo == 'explosao':
+                self.alcance_bomba += 1
+                estado_jogo.powerups.remove(powerup_colidido)
+            elif powerup_colidido.tipo == 'velocidade':
+                self.constante_velocidade += 50
+                estado_jogo.powerups.remove(powerup_colidido)
+            elif powerup_colidido.tipo == 'chute' and not self.chuta:
+                self.chuta = True
+                estado_jogo.powerups.remove(powerup_colidido)
+
         # Atualiza a imagem do jogador
-        if self.estado[0] == 'morte' and self.flag1:
+        if self.estado[0] == 'morte' and self.flag_morte:
             self.tick_animacao = estado_jogo.tick_atual
             self.i_imagem = 0
-            self.flag1 = False
-        elif not self.flag1:
+            self.flag_morte = False
+        elif not self.flag_morte:
             if estado_jogo.tick_atual > self.tick_animacao + self.tempo_morte * (self.i_imagem + 1) / len(self.sprite_sheet['morte']):
                 self.i_imagem += 1
             if not self.i_imagem < len(self.sprite_sheet['morte']):
@@ -180,12 +198,12 @@ class Player(pygame.sprite.Sprite):
         else:
             if ultima_pos == [self.rect.x, self.rect.y]:
                 self.i_imagem = 0
-                self.flag2 = True
-            elif self.flag2:
+                self.flag_andar = True
+            elif self.flag_andar:
                 self.tick_animacao = estado_jogo.tick_atual
                 self.contador = 0
-                self.flag2 = False
-            if estado_jogo.tick_atual > self.tick_animacao + (1000 / self.freq_animacao) * self.contador and not self.flag2:
+                self.flag_andar = False
+            if estado_jogo.tick_atual > self.tick_animacao + (1000 / self.freq_animacao) * self.contador and not self.flag_andar:
                 self.contador += 1
                 self.i_imagem = (self.i_imagem + 1) % len(self.sprite_sheet[self.estado[0]])
 
@@ -239,7 +257,6 @@ class PlayerWhite(Player):
         }
         
         Player.__init__(self, estado_jogo, x, y)
-        estado_jogo.jogadores.add(self)
 
 
 class PlayerBlack(Player):
@@ -282,7 +299,6 @@ class PlayerBlack(Player):
         }
 
         Player.__init__(self, estado_jogo, x, y)
-        estado_jogo.jogadores.add(self)
 
 
 class Bomb(pygame.sprite.Sprite):
@@ -393,7 +409,7 @@ class Explosao(pygame.sprite.Sprite):
         image = pygame.transform.rotate(self.sprite_sheet[self.ind_fase][self.ind_parte], self.inclinacao)
         self.image = pygame.transform.scale(image, (self.width, self.height))
         # Inicializa parametros da explosao
-        self.tempo_explosao = 500  # Tempo da explosao em milisegundos
+        self.tempo_explosao = 600  # Tempo da explosao em milisegundos
         self.tick_inicial = tick_inicial
         self.ind_fase = 0
         self.contador = 1
@@ -401,7 +417,7 @@ class Explosao(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-    def update(self, estado_jogo):  # Consertar a animaacao
+    def update(self, estado_jogo):
         if self.contador < 5:
             if estado_jogo.tick_atual > self.tick_inicial + self.tempo_explosao * self.contador / 10:
                 self.ind_fase += 1
@@ -416,3 +432,24 @@ class Explosao(pygame.sprite.Sprite):
                 self.image = pygame.transform.scale(image, (self.width, self.height))
         else:
             estado_jogo.explosoes.remove(self)  # Remove a explosao
+
+
+class PowerUp(pygame.sprite.Sprite):
+    def __init__(self, estado_jogo, x, y, tipo):
+        pygame.sprite.Sprite.__init__(self)
+        self.width = estado_jogo.sprite_size[0]
+        self.height = estado_jogo.sprite_size[1]
+        self.tipo = tipo
+        # Inicializa imagem dos powerups
+        if tipo == 'estoque':
+            self.image = pygame.transform.scale(pygame.image.load('assets/PowerUps/estoque_powerup.png'), (self.width, self.height))
+        elif tipo == 'explosao':
+            self.image = pygame.transform.scale(pygame.image.load('assets/PowerUps/explosao_powerup.png'), (self.width, self.height))
+        elif tipo == 'velocidade':
+            self.image = pygame.transform.scale(pygame.image.load('assets/PowerUps/velocidade_powerup.png'), (self.width, self.height))
+        elif tipo == 'chute':
+            self.image = pygame.transform.scale(pygame.image.load('assets/PowerUps/chute_powerup.png'), (self.width, self.height))
+        # Inicializa retangulo do powerup
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
