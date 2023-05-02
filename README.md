@@ -38,6 +38,10 @@ Digite o comando "python jogo_bomberman.py"
 # ***Fontes***
 sons do jogo: https://www.sounds-resource.com/snes/superbomberman/sound/35684/
 
+imagens e sprites: https://www.spriters-resource.com/snes/sbomber/
+
+imagem super bomberman: https://bomberman.fandom.com/wiki/Super_Bomberman
+
 
 
 
