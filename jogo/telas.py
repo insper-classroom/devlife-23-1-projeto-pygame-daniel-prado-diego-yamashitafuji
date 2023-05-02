@@ -153,13 +153,20 @@ class TelaJogo:
     def desenha(self, window):
         window.fill((0, 0 ,0))
         self.mapa.fill((0,100,0))
-        # Desenha os blocos
+        # Desenha os grupos
         self.blocos.draw(self.mapa)
         self.bombas.draw(self.mapa)
         self.explosoes.draw(self.mapa)
         # Desenha os players
-        for player in self.jogadores.sprites():
-            self.mapa.blit(player.image, (player.rect.x, player.rect.y - (player.height - self.sprite_size[1])))
+        jogadores = self.jogadores.sprites()
+        while len(jogadores) > 0:
+            menor_y = float('inf')
+            for player in jogadores:
+                if player.rect.y < menor_y:
+                    menor_y = player.rect.y
+                    player_atras = player
+            self.mapa.blit(player_atras.image, (player_atras.rect.x, player_atras.rect.y - (player_atras.height - self.sprite_size[1])))
+            jogadores.remove(player_atras)
         window.blit(self.mapa, ((self.largura_janela - self.mapa.width) / 2, (self.altura_janela - self.mapa.height) / 2))
         pygame.display.update()
 
