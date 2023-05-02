@@ -26,7 +26,7 @@ body {
   
 header {
   width: 100%;
-  background-color: #0033cc;
+  background-color: #283097;
   height: 10%;
   position: fixed;
 }
@@ -45,7 +45,7 @@ header {
 nav{
   float: right;
   width: 80%;
-  padding-top:calc(2.5% - 10px  );
+  padding-top:calc(2.5% - 17px );
   padding: -10px;
   text-align: right;
 }
@@ -168,6 +168,10 @@ nav ul li {
   display: flex;
 }
 
+.image-container p {
+  margin: 7px;
+}
+
 .image-box {
   text-align: center;
   margin: 0 auto;
@@ -203,5 +207,6 @@ table {
 nav ul li:hover {
   background-color: rgba(104, 176, 239, 0.482); 
 }
+
 
  
