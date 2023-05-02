@@ -148,7 +148,7 @@ class TelaJogo:
 
     def gera_jogadores(self):
         self.jogador_um = PlayerWhite(self, self.sprite_size[0], self.sprite_size[1])
-        
+        self.jogador_dois = PlayerBlack(self, (self.n_blocos_internos[0] * 2 + 1) * self.sprite_size[0], (self.n_blocos_internos[1] * 2 + 1) * self.sprite_size[1])
 
     def desenha(self, window):
         window.fill((0, 0 ,0))
@@ -171,6 +171,7 @@ class TelaJogo:
                 return 'exit'
             
             elif event.type == pygame.KEYDOWN:
+                # Jogador 1
                 if event.key == pygame.K_w:
                     self.jogador_um.direcao = 'norte'
                     self.jogador_um.esta_movendo = True
@@ -185,9 +186,24 @@ class TelaJogo:
                     self.jogador_um.esta_movendo = True
                 elif event.key == pygame.K_SPACE:
                     self.jogador_um.cria_bomba(self)
-                    
+                # Jogador 2
+                elif event.key == pygame.K_UP:
+                    self.jogador_dois.direcao = 'norte'
+                    self.jogador_dois.esta_movendo = True
+                elif event.key == pygame.K_LEFT:
+                    self.jogador_dois.direcao = 'oeste'
+                    self.jogador_dois.esta_movendo = True
+                elif event.key == pygame.K_DOWN:
+                    self.jogador_dois.direcao = 'sul'
+                    self.jogador_dois.esta_movendo = True
+                elif event.key == pygame.K_RIGHT:
+                    self.jogador_dois.direcao = 'leste'
+                    self.jogador_dois.esta_movendo = True
+                elif event.key == pygame.K_RCTRL:
+                    self.jogador_dois.cria_bomba(self)
 
             elif event.type == pygame.KEYUP:
+                # Jogador1
                 if event.key == pygame.K_w and self.jogador_um.direcao == 'norte':
                     self.jogador_um.esta_movendo = False
                 elif event.key == pygame.K_a and self.jogador_um.direcao == 'oeste':
@@ -196,6 +212,15 @@ class TelaJogo:
                     self.jogador_um.esta_movendo = False
                 elif event.key == pygame.K_d and self.jogador_um.direcao == 'leste':
                     self.jogador_um.esta_movendo = False
+                # Jogador 2
+                if event.key == pygame.K_UP and self.jogador_dois.direcao == 'norte':
+                    self.jogador_dois.esta_movendo = False
+                elif event.key == pygame.K_LEFT and self.jogador_dois.direcao == 'oeste':
+                    self.jogador_dois.esta_movendo = False
+                elif event.key == pygame.K_DOWN and self.jogador_dois.direcao == 'sul':
+                    self.jogador_dois.esta_movendo = False
+                elif event.key == pygame.K_RIGHT and self.jogador_dois.direcao == 'leste':
+                    self.jogador_dois.esta_movendo = False
                     
         self.jogadores.update(self)
         self.bombas.update(self)
