@@ -75,12 +75,8 @@ class Player(pygame.sprite.Sprite):
         # Parametros dos jogadores
         self.estoque_bomba = 1
         self.alcance_bomba = 1
-<<<<<<< HEAD
-        self.constante_velocidade = 300
-=======
         self.constante_velocidade = 250
         self.chuta = False
->>>>>>> 082243b16b4b7d683c1f4b18f0cfa4b6d5afee18
         # Parametros da imagem
         self.sprite_width = estado_jogo.sprite_size[0]
         self.sprite_height = estado_jogo.sprite_size[1]
@@ -217,7 +213,7 @@ class Player(pygame.sprite.Sprite):
             estado_jogo.bombas.add(Bomb(self.cor, pos_x_arredondado, pos_y_arredondado, estado_jogo, self.alcance_bomba))
 
 
-class PlayerWhite(Player):
+class PlayerWhite(Player):  
     def __init__(self, estado_jogo, x, y):
         self.width, self.height = estado_jogo.sprite_size[0], estado_jogo.sprite_size[1] * 1.6
         self.cor = 'white'

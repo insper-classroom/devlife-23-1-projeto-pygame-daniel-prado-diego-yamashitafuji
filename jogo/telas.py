@@ -235,7 +235,7 @@ class TelaJogo:
                     self.jogador_dois.estado = ['sul', True]
                 elif event.key == pygame.K_RIGHT and self.jogador_dois.estado[0] != 'morte':
                     self.jogador_dois.estado = ['leste', True]
-                elif event.key == pygame.K_RCTRL and self.jogador_dois.estado[0] != 'morte':
+                elif event.key == pygame.K_RSHIFT and self.jogador_dois.estado[0] != 'morte':
                     self.jogador_dois.cria_bomba(self)
 
             elif event.type == pygame.KEYUP:
@@ -307,6 +307,12 @@ class TelasCredito:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return 'exit'
+            
+            if mouse_point.colliderect(self.rect_VOLTAR):
+                self.VOLTAR = pygame.font.Font(self.font, 40).render('VOLTAR', True, (255, 255, 0))
+            if not mouse_point.colliderect(self.rect_VOLTAR):
+                self.VOLTAR = pygame.font.Font(self.font, 35).render('VOLTAR', True, (255, 140, 0))
+
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 if mouse_point.colliderect(self.rect_VOLTAR):
                     return TelaMenu(self.largura_janela, self.altura_janela)
