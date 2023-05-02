@@ -89,10 +89,10 @@ class TelaJogo:
         self.sprite_size = [50, 50]  # Tamanho horizontal e vertical em pixels das sprites
         #  Inicializa parametros do mapa
         self.n_blocos_internos = [6, 5]  # N horizontal e N vertical
-        self.n_blocos_quebraveis = 0
-        self.n_estoque_pu = 10
-        self.n_explosao_pu = 10
-        self.n_velocidade_pu = 6
+        self.n_blocos_quebraveis = 90
+        self.n_estoque_pu = 6
+        self.n_explosao_pu = 6
+        self.n_velocidade_pu = 4
         self.n_chute_pu = 2
         self.largura_mapa = (self.n_blocos_internos[0] * 2 + 3) * self.sprite_size[0]
         self.altura_mapa = (self.n_blocos_internos[1] * 2 + 3) * self.sprite_size[1]
@@ -139,7 +139,7 @@ class TelaJogo:
                 quantidade = self.n_velocidade_pu
             elif a == 3:
                 tipo = 'chute'
-                quantidade = self.n_velocidade_pu
+                quantidade = self.n_chute_pu
             for i in range(quantidade):
                 bool = True
                 while bool:
@@ -341,7 +341,3 @@ class TelaScore:
             if event.type == pygame.QUIT:
                 return 'exit'
         return self
-    
-    
-
-    

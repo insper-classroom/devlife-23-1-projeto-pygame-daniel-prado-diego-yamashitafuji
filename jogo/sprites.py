@@ -77,9 +77,6 @@ class Player(pygame.sprite.Sprite):
         self.alcance_bomba = 1
         self.constante_velocidade = 250
         self.chuta = False
-        self.lim_estoque = 5
-        self.lim_alcance = 8
-        self.lim_velocidade = 550
         # Parametros da imagem
         self.sprite_width = estado_jogo.sprite_size[0]
         self.sprite_height = estado_jogo.sprite_size[1]
@@ -89,8 +86,8 @@ class Player(pygame.sprite.Sprite):
         self.tick_anterior = 0
         self.vel = [0, 0]
         # Parametros de animacao
-        self.flag1 = True
-        self.flag2 = True
+        self.flag_morte = True
+        self.flag_andar = True
         self.contador = 0
         self.tick_animacao = 0 # Tick inicial da animacao
         self.freq_animacao = 6  # Frequencia da animacao em hertz
@@ -168,24 +165,25 @@ class Player(pygame.sprite.Sprite):
             self.estado = ['morte', False]
         if len(pygame.sprite.spritecollide(self, estado_jogo.powerups, False)) > 0:
             powerup_colidido = pygame.sprite.spritecollide(self, estado_jogo.powerups, False)[0]
-            if powerup_colidido.tipo == 'estoque' and self.estoque_bomba < self.lim_estoque:
+            if powerup_colidido.tipo == 'estoque':
                 self.estoque_bomba += 1
                 estado_jogo.powerups.remove(powerup_colidido)
-            elif powerup_colidido.tipo == 'explosao' and self.alcance_bomba < self.lim_alcance:
-                self.alcance_bomba += 2
+            elif powerup_colidido.tipo == 'explosao':
+                self.alcance_bomba += 1
                 estado_jogo.powerups.remove(powerup_colidido)
-            elif powerup_colidido.tipo == 'velocidade' and self.constante_velocidade < self.lim_velocidade:
-                self.constante_velocidade += 100
+            elif powerup_colidido.tipo == 'velocidade':
+                self.constante_velocidade += 50
                 estado_jogo.powerups.remove(powerup_colidido)
             elif powerup_colidido.tipo == 'chute' and not self.chuta:
                 self.chuta = True
+                estado_jogo.powerups.remove(powerup_colidido)
 
         # Atualiza a imagem do jogador
-        if self.estado[0] == 'morte' and self.flag1:
+        if self.estado[0] == 'morte' and self.flag_morte:
             self.tick_animacao = estado_jogo.tick_atual
             self.i_imagem = 0
-            self.flag1 = False
-        elif not self.flag1:
+            self.flag_morte = False
+        elif not self.flag_morte:
             if estado_jogo.tick_atual > self.tick_animacao + self.tempo_morte * (self.i_imagem + 1) / len(self.sprite_sheet['morte']):
                 self.i_imagem += 1
             if not self.i_imagem < len(self.sprite_sheet['morte']):
@@ -196,12 +194,12 @@ class Player(pygame.sprite.Sprite):
         else:
             if ultima_pos == [self.rect.x, self.rect.y]:
                 self.i_imagem = 0
-                self.flag2 = True
-            elif self.flag2:
+                self.flag_andar = True
+            elif self.flag_andar:
                 self.tick_animacao = estado_jogo.tick_atual
                 self.contador = 0
-                self.flag2 = False
-            if estado_jogo.tick_atual > self.tick_animacao + (1000 / self.freq_animacao) * self.contador and not self.flag2:
+                self.flag_andar = False
+            if estado_jogo.tick_atual > self.tick_animacao + (1000 / self.freq_animacao) * self.contador and not self.flag_andar:
                 self.contador += 1
                 self.i_imagem = (self.i_imagem + 1) % len(self.sprite_sheet[self.estado[0]])
 
@@ -407,7 +405,7 @@ class Explosao(pygame.sprite.Sprite):
         image = pygame.transform.rotate(self.sprite_sheet[self.ind_fase][self.ind_parte], self.inclinacao)
         self.image = pygame.transform.scale(image, (self.width, self.height))
         # Inicializa parametros da explosao
-        self.tempo_explosao = 500  # Tempo da explosao em milisegundos
+        self.tempo_explosao = 600  # Tempo da explosao em milisegundos
         self.tick_inicial = tick_inicial
         self.ind_fase = 0
         self.contador = 1
