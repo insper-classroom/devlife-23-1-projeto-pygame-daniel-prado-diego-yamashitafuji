@@ -84,15 +84,21 @@ class TelaJogo:
         self.blocos = pygame.sprite.Group()
         self.bombas = pygame.sprite.Group()
         self.explosoes = pygame.sprite.Group()
+        self.powerups = pygame.sprite.Group()
         self.jogadores = pygame.sprite.Group()
         self.sprite_size = [50, 50]  # Tamanho horizontal e vertical em pixels das sprites
         #  Inicializa parametros do mapa
         self.n_blocos_internos = [6, 5]  # N horizontal e N vertical
         self.n_blocos_quebraveis = 0
+        self.n_estoque_pu = 10
+        self.n_explosao_pu = 10
+        self.n_velocidade_pu = 6
+        self.n_chute_pu = 2
         self.largura_mapa = (self.n_blocos_internos[0] * 2 + 3) * self.sprite_size[0]
         self.altura_mapa = (self.n_blocos_internos[1] * 2 + 3) * self.sprite_size[1]
         self.mapa = Mapa(self)
         self.gera_paredes_inquebraveis()
+        self.gera_powerups()
         self.gera_paredes_quebraveis()  # Caso a quantidade exeda o limite, o jogo quebra
         self.gera_jogadores()
         
@@ -120,6 +126,34 @@ class TelaJogo:
                 x = x_unidade * self.sprite_size[0]
                 self.blocos.add(UnbreakBlock(self, x, y))
 
+    def gera_powerups(self):
+        for a in range(4):
+            if a == 0:
+                tipo = 'estoque'
+                quantidade = self.n_estoque_pu
+            elif a == 1:
+                tipo = 'explosao'
+                quantidade = self.n_explosao_pu
+            elif a == 2:
+                tipo = 'velocidade'
+                quantidade = self.n_velocidade_pu
+            elif a == 3:
+                tipo = 'chute'
+                quantidade = self.n_velocidade_pu
+            for i in range(quantidade):
+                bool = True
+                while bool:
+                    x_unidade = random.randint(1, 1 + 2 * self.n_blocos_internos[0])
+                    y_unidade = random.randint(1, 1 + 2 * self.n_blocos_internos[1])
+
+                    x = x_unidade * self.sprite_size[0]
+                    y = y_unidade * self.sprite_size[1]
+
+                    powerup = PowerUp(self, x, y, tipo)
+
+                    if len(pygame.sprite.spritecollide(powerup, self.powerups, False)) == 0 and len(pygame.sprite.spritecollide(powerup, self.blocos, False)) == 0:
+                        bool = False
+                self.powerups.add(powerup)
 
     def gera_paredes_quebraveis(self):
         for i in range(self.n_blocos_quebraveis):
@@ -135,7 +169,7 @@ class TelaJogo:
                 elif x_unidade == 2 * self.n_blocos_internos[0] + 1:
                     y_unidade = random.randint(1, 2 * self.n_blocos_internos[1] - 1)
                 else:
-                    y_unidade = random.randint(1, 11)
+                    y_unidade = random.randint(1, self.n_blocos_internos[1] * 2 + 1)
                 x = x_unidade * self.sprite_size[0]
                 y = y_unidade * self.sprite_size[1]
 
@@ -148,12 +182,15 @@ class TelaJogo:
 
     def gera_jogadores(self):
         self.jogador_um = PlayerWhite(self, self.sprite_size[0], self.sprite_size[1])
+        self.jogadores.add(self.jogador_um)
         self.jogador_dois = PlayerBlack(self, (self.n_blocos_internos[0] * 2 + 1) * self.sprite_size[0], (self.n_blocos_internos[1] * 2 + 1) * self.sprite_size[1])
+        self.jogadores.add(self.jogador_dois)
 
     def desenha(self, window):
         window.fill((0, 0 ,0))
         self.mapa.fill((0,100,0))
         # Desenha os grupos
+        self.powerups.draw(self.mapa)
         self.blocos.draw(self.mapa)
         self.bombas.draw(self.mapa)
         self.explosoes.draw(self.mapa)

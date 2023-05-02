@@ -40,9 +40,7 @@ class UnbreakBlock(Block):
         self.y = y
         self.eh_quebravel = False 
         # Inicializa imagem
-        imagem_w, imagem_h = pygame.image.load('assets/Blocos/blocoinquebravel.png').get_size()
-        imagem_res = imagem_w / imagem_h  # Devido a sombra contida na imagem, é necessário compensar o tamanho exedente
-        self.image = pygame.transform.scale(pygame.image.load('assets/Blocos/blocoinquebravel.png'), (self.width, self.height * imagem_res ** -1))
+        self.image = pygame.transform.scale(pygame.image.load('assets/Blocos/blocoinquebravel.png'), (self.width, self.height))
 
         Block.__init__(self)
 
@@ -77,7 +75,11 @@ class Player(pygame.sprite.Sprite):
         # Parametros dos jogadores
         self.estoque_bomba = 1
         self.alcance_bomba = 1
-        self.constante_velocidade = 300
+        self.constante_velocidade = 250
+        self.chuta = False
+        self.lim_estoque = 5
+        self.lim_alcance = 8
+        self.lim_velocidade = 550
         # Parametros da imagem
         self.sprite_width = estado_jogo.sprite_size[0]
         self.sprite_height = estado_jogo.sprite_size[1]
@@ -164,6 +166,20 @@ class Player(pygame.sprite.Sprite):
         # Colisao com explosao
         if len(pygame.sprite.spritecollide(self, estado_jogo.explosoes, False)) > 0:
             self.estado = ['morte', False]
+        if len(pygame.sprite.spritecollide(self, estado_jogo.powerups, False)) > 0:
+            powerup_colidido = pygame.sprite.spritecollide(self, estado_jogo.powerups, False)[0]
+            if powerup_colidido.tipo == 'estoque' and self.estoque_bomba < self.lim_estoque:
+                self.estoque_bomba += 1
+                estado_jogo.powerups.remove(powerup_colidido)
+            elif powerup_colidido.tipo == 'explosao' and self.alcance_bomba < self.lim_alcance:
+                self.alcance_bomba += 2
+                estado_jogo.powerups.remove(powerup_colidido)
+            elif powerup_colidido.tipo == 'velocidade' and self.constante_velocidade < self.lim_velocidade:
+                self.constante_velocidade += 100
+                estado_jogo.powerups.remove(powerup_colidido)
+            elif powerup_colidido.tipo == 'chute' and not self.chuta:
+                self.chuta = True
+
         # Atualiza a imagem do jogador
         if self.estado[0] == 'morte' and self.flag1:
             self.tick_animacao = estado_jogo.tick_atual
@@ -239,7 +255,6 @@ class PlayerWhite(Player):
         }
         
         Player.__init__(self, estado_jogo, x, y)
-        estado_jogo.jogadores.add(self)
 
 
 class PlayerBlack(Player):
@@ -282,7 +297,6 @@ class PlayerBlack(Player):
         }
 
         Player.__init__(self, estado_jogo, x, y)
-        estado_jogo.jogadores.add(self)
 
 
 class Bomb(pygame.sprite.Sprite):
@@ -416,3 +430,24 @@ class Explosao(pygame.sprite.Sprite):
                 self.image = pygame.transform.scale(image, (self.width, self.height))
         else:
             estado_jogo.explosoes.remove(self)  # Remove a explosao
+
+
+class PowerUp(pygame.sprite.Sprite):
+    def __init__(self, estado_jogo, x, y, tipo):
+        pygame.sprite.Sprite.__init__(self)
+        self.width = estado_jogo.sprite_size[0]
+        self.height = estado_jogo.sprite_size[1]
+        self.tipo = tipo
+        # Inicializa imagem dos powerups
+        if tipo == 'estoque':
+            self.image = pygame.transform.scale(pygame.image.load('assets/PowerUps/estoque_powerup.png'), (self.width, self.height))
+        elif tipo == 'explosao':
+            self.image = pygame.transform.scale(pygame.image.load('assets/PowerUps/explosao_powerup.png'), (self.width, self.height))
+        elif tipo == 'velocidade':
+            self.image = pygame.transform.scale(pygame.image.load('assets/PowerUps/velocidade_powerup.png'), (self.width, self.height))
+        elif tipo == 'chute':
+            self.image = pygame.transform.scale(pygame.image.load('assets/PowerUps/chute_powerup.png'), (self.width, self.height))
+        # Inicializa retangulo do powerup
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
