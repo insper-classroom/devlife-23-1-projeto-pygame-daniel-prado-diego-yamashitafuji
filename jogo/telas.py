@@ -238,6 +238,7 @@ class TelaJogo:
                 elif event.key == pygame.K_RIGHT and self.jogador_dois.estado[0] != 'morte':
                     self.jogador_dois.estado = ['leste', True]
                 elif event.key == pygame.K_RSHIFT and self.jogador_dois.estado[0] != 'morte':
+                    self.jogador_dois.flag_bomba = False
                     self.jogador_dois.cria_bomba(self)
 
             elif event.type == pygame.KEYUP:

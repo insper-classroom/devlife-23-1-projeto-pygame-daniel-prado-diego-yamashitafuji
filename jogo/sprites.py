@@ -349,7 +349,11 @@ class Bomb(pygame.sprite.Sprite):
         self.rect.x += self.vel[0] * frame_time / 1000
         self.rect.y += self.vel[1] * frame_time / 1000
         # Colisao com blocos
-        if len(pygame.sprite.spritecollide(self, estado_jogo.blocos, False)) > 0 or len(pygame.sprite.spritecollide(self, estado_jogo.jogadores, False)) > 0:
+        if len(pygame.sprite.spritecollide(self, estado_jogo.blocos, False)) > 0:
+            self.rect.x, self.rect.y = ultima_pos
+            self.vel = [0, 0]
+        # Colisao com jogadores
+        if len(pygame.sprite.spritecollide(self, estado_jogo.jogadores, False)) > 0 and pygame.sprite.spritecollide(self, estado_jogo.jogadores, False)[0].cor != self.player:
             self.rect.x, self.rect.y = ultima_pos
             self.vel = [0, 0]
         if estado_jogo.tick_atual > self.tick_inicial + 500 * self.fase_imagem:
