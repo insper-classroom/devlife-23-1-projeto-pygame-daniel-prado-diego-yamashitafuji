@@ -208,5 +208,15 @@ nav ul li:hover {
   background-color: rgba(104, 176, 239, 0.482); 
 }
 
+.instruções ol{
+  font-family: Arial, Helvetica, sans-serif;
+  list-style: decimal;
+  margin: 10px;
+  text-align: justify;
+  padding: 10px 40px;
+}
 
+.instruções ol li{
+  margin: 10px;
+}
  

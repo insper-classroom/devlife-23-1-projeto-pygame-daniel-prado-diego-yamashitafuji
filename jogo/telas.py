@@ -199,7 +199,7 @@ class TelaJogo:
                 elif event.key == pygame.K_RIGHT:
                     self.jogador_dois.direcao = 'leste'
                     self.jogador_dois.esta_movendo = True
-                elif event.key == pygame.K_RCTRL:
+                elif event.key == pygame.K_RSHIFT:
                     self.jogador_dois.cria_bomba(self)
 
             elif event.type == pygame.KEYUP:
@@ -242,7 +242,7 @@ class TelasCredito:
 
         self.GRUPO = pygame.font.Font(self.font, 50).render('GRUPO', True, (255, 140, 0))
         self.DANIEL = pygame.font.Font(self.font, 35).render('DANIEL', True, (255, 140, 0))
-        self.DIEGO = pygame.font.Font(self.font, 35).render('DIEGO', True, (255, 140, 0))
+        self.DIEGO = pygame.font.Font(self.font, 35).render('DIEGO ', True, (255, 140, 0))
 
 
     def desenha(self, window):
