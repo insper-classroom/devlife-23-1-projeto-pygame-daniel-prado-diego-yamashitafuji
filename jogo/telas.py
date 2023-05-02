@@ -90,8 +90,13 @@ class TelaJogo:
         #  Inicializa parametros do mapa
         self.n_blocos_internos = [6, 5]  # N horizontal e N vertical
         self.n_blocos_quebraveis = 60
+<<<<<<< HEAD
         self.n_estoque_pu = 8
         self.n_explosao_pu = 8
+=======
+        self.n_estoque_pu = 6
+        self.n_explosao_pu = 6
+>>>>>>> 13a7b12 (implementacao de som)
         self.n_velocidade_pu = 4
         self.n_chute_pu = 2
         self.largura_mapa = (self.n_blocos_internos[0] * 2 + 3) * self.sprite_size[0]
@@ -210,6 +215,14 @@ class TelaJogo:
 
 
     def atualiza(self):
+        if len(self.jogadores.sprites()) < 2:
+            if len(self.jogadores.sprites()) > 0:
+                if self.jogadores.sprites()[0].cor == 'white':
+                    return TelaWhiteV
+                elif self.jogadores.sprites()[0].cor == 'black':
+                    return TelaBlackV
+            else:
+                return 'draw'
         self.tick_atual = pygame.time.get_ticks()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
