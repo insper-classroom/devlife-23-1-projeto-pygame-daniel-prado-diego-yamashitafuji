@@ -17,7 +17,7 @@ class Block(pygame.sprite.Sprite):
         # Inicializa o estado do bloco
         self.estado = False  # False para nao quebrado, True para quebrado
         self.tick_inicial = 0
-        self.tempo_animacao = 500  # Tempo da animacao em milisegundos
+        self.tempo_animacao = 750  # Tempo da animacao em milisegundos
 
     def update(self, estado_jogo):
         if self.estado and self.tick_inicial == 0:
@@ -82,6 +82,11 @@ class Player(pygame.sprite.Sprite):
         self.sprite_height = estado_jogo.sprite_size[1]
         self.i_imagem = 0
         self.estado = ['sul', False]  # Direcao do jogador e informacao de parado ou nao
+        # Sons
+        self.coloca_bomba_som = pygame.mixer.Sound('assets/Sons/colocabomba.wav')
+        self.morre_som = pygame.mixer.Sound('assets/Sons/morrebomberman.wav')
+        self.chuta_som = pygame.mixer.Sound('assets/Sons/chutabomba.wav')
+        self.pega_powerup_som = pygame.mixer.Sound('assets/Sons/pegaitem.wav')
         # Parametros de deslocamento
         self.tick_anterior = 0
         self.vel = [0, 0]
@@ -167,6 +172,7 @@ class Player(pygame.sprite.Sprite):
         # Colisao com powerup
         if len(pygame.sprite.spritecollide(self, estado_jogo.powerups, False)) > 0:
             powerup_colidido = pygame.sprite.spritecollide(self, estado_jogo.powerups, False)[0]
+            self.pega_powerup_som.play()
             if powerup_colidido.tipo == 'estoque':
                 self.estoque_bomba += 1
                 estado_jogo.powerups.remove(powerup_colidido)
@@ -182,6 +188,7 @@ class Player(pygame.sprite.Sprite):
         # Colisao com bomba
         if len(pygame.sprite.spritecollide(self, estado_jogo.bombas, False)) > 0 and self.flag_bomba:
             if self.chuta:
+                self.chuta_som.play()
                 bomba_colidida = pygame.sprite.spritecollide(self, estado_jogo.bombas, False)[0]
                 bomba_colidida.movimenta(self.estado[0])
         elif len(pygame.sprite.spritecollide(self, estado_jogo.bombas, False)) == 0 and not self.flag_bomba:
@@ -189,6 +196,7 @@ class Player(pygame.sprite.Sprite):
 
         # Atualiza a imagem do jogador
         if self.estado[0] == 'morte' and self.flag_morte:
+            self.morre_som.play()
             self.tick_animacao = estado_jogo.tick_atual
             self.i_imagem = 0
             self.flag_morte = False
@@ -220,6 +228,7 @@ class Player(pygame.sprite.Sprite):
             pos_x_arredondado = round(self.rect.x / self.sprite_width) * self.sprite_width
             pos_y_arredondado = round(self.rect.y / self.sprite_height) * self.sprite_height
             estado_jogo.bombas.add(Bomb(self.cor, pos_x_arredondado, pos_y_arredondado, estado_jogo, self.alcance_bomba))
+            self.coloca_bomba_som.play()
 
 
 class PlayerWhite(Player):  
@@ -320,6 +329,8 @@ class Bomb(pygame.sprite.Sprite):
         self.ind_imagem = 0
         self.fase_imagem = 1
         self.image = self.sprite_sheet[self.ind_imagem]
+        # Sons
+        self.explode_som = pygame.mixer.Sound('assets/Sons/explodebomba.wav')
         # Inicializa retangulo da bomba
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -365,6 +376,7 @@ class Bomb(pygame.sprite.Sprite):
             self.explode_bomba(estado_jogo)
 
     def explode_bomba(self, estado_jogo):
+        self.explode_som.play()
         estado_jogo.bombas.remove(self)
         if self.player == 'white': 
             estado_jogo.jogador_um.estoque_bomba += 1
