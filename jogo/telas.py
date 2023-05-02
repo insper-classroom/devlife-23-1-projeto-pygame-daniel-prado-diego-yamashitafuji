@@ -89,7 +89,7 @@ class TelaJogo:
         self.sprite_size = [50, 50]  # Tamanho horizontal e vertical em pixels das sprites
         #  Inicializa parametros do mapa
         self.n_blocos_internos = [6, 5]  # N horizontal e N vertical
-        self.n_blocos_quebraveis = 90
+        self.n_blocos_quebraveis = 30
         self.n_estoque_pu = 6
         self.n_explosao_pu = 6
         self.n_velocidade_pu = 4
@@ -238,6 +238,7 @@ class TelaJogo:
                 elif event.key == pygame.K_RIGHT and self.jogador_dois.estado[0] != 'morte':
                     self.jogador_dois.estado = ['leste', True]
                 elif event.key == pygame.K_RSHIFT and self.jogador_dois.estado[0] != 'morte':
+                    self.jogador_dois.flag_bomba = False
                     self.jogador_dois.cria_bomba(self)
 
             elif event.type == pygame.KEYUP:
