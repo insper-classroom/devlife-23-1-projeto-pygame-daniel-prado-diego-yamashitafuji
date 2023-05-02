@@ -35,6 +35,11 @@ Digite o comando "python jogo_bomberman.py"
 ## Tela Scoreboard
 ![imagem](jogo/img/score_readme.jpg)
 
+# ***Fontes***
+sons do jogo: https://www.sounds-resource.com/snes/superbomberman/sound/35684/
+
+
+
 
 
 

@@ -437,7 +437,7 @@ class Explosao(pygame.sprite.Sprite):
         image = pygame.transform.rotate(self.sprite_sheet[self.ind_fase][self.ind_parte], self.inclinacao)
         self.image = pygame.transform.scale(image, (self.width, self.height))
         # Inicializa parametros da explosao
-        self.tempo_explosao = 600  # Tempo da explosao em milisegundos
+        self.tempo_explosao = 750  # Tempo da explosao em milisegundos
         self.tick_inicial = tick_inicial
         self.ind_fase = 0
         self.contador = 1
