@@ -110,9 +110,9 @@ class Player(pygame.sprite.Sprite):
         # Atualiza a velodcidade do jogador
         if self.estado[1]:
             if self.estado[0] == 'norte':
-                self.vel = [0, -self.constante_velocidade]
+                self.vel = [0, -(self.constante_velocidade)]
             elif self.estado[0] == 'oeste':
-                self.vel = [-self.constante_velocidade, 0]
+                self.vel = [-(self.constante_velocidade), 0]
             elif self.estado[0] == 'sul':
                 self.vel = [0, self.constante_velocidade]
             elif self.estado[0] == 'leste':

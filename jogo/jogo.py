@@ -1,6 +1,6 @@
 import pygame
 from telas import *
-from telas import *
+from telajogo import TelaJogo
 
 
 class Jogo:
@@ -11,7 +11,7 @@ class Jogo:
         self.window = pygame.display.set_mode((self.largura_janela, self.altura_janela))
         self.melhor_de_ = 0  # esta variavel é referente modalidade do jogo, melhor de 1, 3 ou 5
         self.vitorias_branco = 0
-        self.vitorias_preto
+        self.vitorias_preto = 0
 
     def roda(self):
         tela_atual = TelaJogo(self.largura_janela, self.altura_janela)
