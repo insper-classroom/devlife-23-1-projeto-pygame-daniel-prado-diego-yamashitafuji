@@ -88,7 +88,7 @@ class TelaJogo:
         self.sprite_size = [50, 50]  # Tamanho horizontal e vertical em pixels das sprites
         #  Inicializa parametros do mapa
         self.n_blocos_internos = [6, 5]  # N horizontal e N vertical
-        self.n_blocos_quebraveis = 30
+        self.n_blocos_quebraveis = 0
         self.largura_mapa = (self.n_blocos_internos[0] * 2 + 3) * self.sprite_size[0]
         self.altura_mapa = (self.n_blocos_internos[1] * 2 + 3) * self.sprite_size[1]
         self.mapa = Mapa(self)
@@ -153,13 +153,20 @@ class TelaJogo:
     def desenha(self, window):
         window.fill((0, 0 ,0))
         self.mapa.fill((0,100,0))
-        # Desenha os blocos
+        # Desenha os grupos
         self.blocos.draw(self.mapa)
         self.bombas.draw(self.mapa)
         self.explosoes.draw(self.mapa)
         # Desenha os players
-        for player in self.jogadores.sprites():
-            self.mapa.blit(player.image, (player.rect.x, player.rect.y - (player.height - self.sprite_size[1])))
+        jogadores = self.jogadores.sprites()
+        while len(jogadores) > 0:
+            menor_y = float('inf')
+            for player in jogadores:
+                if player.rect.y < menor_y:
+                    menor_y = player.rect.y
+                    player_atras = player
+            self.mapa.blit(player_atras.image, (player_atras.rect.x, player_atras.rect.y - (player_atras.height - self.sprite_size[1])))
+            jogadores.remove(player_atras)
         window.blit(self.mapa, ((self.largura_janela - self.mapa.width) / 2, (self.altura_janela - self.mapa.height) / 2))
         pygame.display.update()
 
@@ -172,55 +179,47 @@ class TelaJogo:
             
             elif event.type == pygame.KEYDOWN:
                 # Jogador 1
-                if event.key == pygame.K_w:
-                    self.jogador_um.direcao = 'norte'
-                    self.jogador_um.esta_movendo = True
-                elif event.key == pygame.K_a:
-                    self.jogador_um.direcao = 'oeste'
-                    self.jogador_um.esta_movendo = True
-                elif event.key == pygame.K_s:
-                    self.jogador_um.direcao = 'sul'
-                    self.jogador_um.esta_movendo = True
-                elif event.key == pygame.K_d:
-                    self.jogador_um.direcao = 'leste'
-                    self.jogador_um.esta_movendo = True
-                elif event.key == pygame.K_SPACE:
+                if event.key == pygame.K_w and self.jogador_um.estado[0] != 'morte':
+                    self.jogador_um.estado = ['norte', True]
+                elif event.key == pygame.K_a and self.jogador_um.estado[0] != 'morte':
+                    self.jogador_um.estado = ['oeste', True]
+                elif event.key == pygame.K_s and self.jogador_um.estado[0] != 'morte':
+                    self.jogador_um.estado = ['sul', True]
+                elif event.key == pygame.K_d and self.jogador_um.estado[0] != 'morte':
+                    self.jogador_um.estado = ['leste', True]
+                elif event.key == pygame.K_SPACE and self.jogador_um.estado[0] != 'morte':
                     self.jogador_um.cria_bomba(self)
                 # Jogador 2
-                elif event.key == pygame.K_UP:
-                    self.jogador_dois.direcao = 'norte'
-                    self.jogador_dois.esta_movendo = True
-                elif event.key == pygame.K_LEFT:
-                    self.jogador_dois.direcao = 'oeste'
-                    self.jogador_dois.esta_movendo = True
-                elif event.key == pygame.K_DOWN:
-                    self.jogador_dois.direcao = 'sul'
-                    self.jogador_dois.esta_movendo = True
-                elif event.key == pygame.K_RIGHT:
-                    self.jogador_dois.direcao = 'leste'
-                    self.jogador_dois.esta_movendo = True
-                elif event.key == pygame.K_RSHIFT:
+                elif event.key == pygame.K_UP and self.jogador_dois.estado[0] != 'morte':
+                    self.jogador_dois.estado = ['norte', True]
+                elif event.key == pygame.K_LEFT and self.jogador_dois.estado[0] != 'morte':
+                    self.jogador_dois.estado = ['oeste', True]
+                elif event.key == pygame.K_DOWN and self.jogador_dois.estado[0] != 'morte':
+                    self.jogador_dois.estado = ['sul', True]
+                elif event.key == pygame.K_RIGHT and self.jogador_dois.estado[0] != 'morte':
+                    self.jogador_dois.estado = ['leste', True]
+                elif event.key == pygame.K_RCTRL and self.jogador_dois.estado[0] != 'morte':
                     self.jogador_dois.cria_bomba(self)
 
             elif event.type == pygame.KEYUP:
                 # Jogador1
-                if event.key == pygame.K_w and self.jogador_um.direcao == 'norte':
-                    self.jogador_um.esta_movendo = False
-                elif event.key == pygame.K_a and self.jogador_um.direcao == 'oeste':
-                    self.jogador_um.esta_movendo = False
-                elif event.key == pygame.K_s and self.jogador_um.direcao == 'sul':
-                    self.jogador_um.esta_movendo = False
-                elif event.key == pygame.K_d and self.jogador_um.direcao == 'leste':
-                    self.jogador_um.esta_movendo = False
+                if event.key == pygame.K_w and self.jogador_um.estado[0] == 'norte':
+                    self.jogador_um.estado[1] = False
+                elif event.key == pygame.K_a and self.jogador_um.estado[0] == 'oeste':
+                    self.jogador_um.estado[1] = False
+                elif event.key == pygame.K_s and self.jogador_um.estado[0] == 'sul':
+                    self.jogador_um.estado[1] = False
+                elif event.key == pygame.K_d and self.jogador_um.estado[0] == 'leste':
+                    self.jogador_um.estado[1] = False
                 # Jogador 2
-                if event.key == pygame.K_UP and self.jogador_dois.direcao == 'norte':
-                    self.jogador_dois.esta_movendo = False
-                elif event.key == pygame.K_LEFT and self.jogador_dois.direcao == 'oeste':
-                    self.jogador_dois.esta_movendo = False
-                elif event.key == pygame.K_DOWN and self.jogador_dois.direcao == 'sul':
-                    self.jogador_dois.esta_movendo = False
-                elif event.key == pygame.K_RIGHT and self.jogador_dois.direcao == 'leste':
-                    self.jogador_dois.esta_movendo = False
+                if event.key == pygame.K_UP and self.jogador_dois.estado[0] == 'norte':
+                    self.jogador_dois.estado[1] = False
+                elif event.key == pygame.K_LEFT and self.jogador_dois.estado[0] == 'oeste':
+                    self.jogador_dois.estado[1] = False
+                elif event.key == pygame.K_DOWN and self.jogador_dois.estado[0] == 'sul':
+                    self.jogador_dois.estado[1] = False
+                elif event.key == pygame.K_RIGHT and self.jogador_dois.estado[0] == 'leste':
+                    self.jogador_dois.estado[1] = False
                     
         self.jogadores.update(self)
         self.bombas.update(self)
