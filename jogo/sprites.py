@@ -76,7 +76,7 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         # Parametros dos jogadores
         self.estoque_bomba = 1
-        self.alcance_bomba = 0
+        self.alcance_bomba = 1
         self.constante_velocidade = 300
         # Parametros da imagem
         self.sprite_width = estado_jogo.sprite_size[0]

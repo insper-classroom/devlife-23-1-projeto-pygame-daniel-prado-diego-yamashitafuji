@@ -232,6 +232,7 @@ class TelasCredito:
     def __init__(self, largura_janela, altura_janela):
         self.largura_janela = largura_janela
         self.altura_janela = altura_janela
+        
 
         self.IMAGEM_ICON = pygame.image.load('jogo/img/bomberman-icon.png')
         self.IMAGEM_ICON_SCALE = pygame.transform.scale(self.IMAGEM_ICON, (45,45))
@@ -239,10 +240,16 @@ class TelasCredito:
         self.BOMB_FINAL = pygame.image.load('jogo/img/bomb_credits.png')
         self.font = 'jogo/img/fonte.ttf'
 
+        
+
         self.GRUPO = pygame.font.Font(self.font, 50).render('GRUPO', True, (255, 140, 0))
         self.DANIEL = pygame.font.Font(self.font, 35).render('DANIEL', True, (255, 140, 0))
         self.DIEGO = pygame.font.Font(self.font, 35).render('DIEGO ', True, (255, 140, 0))
+        self.VOLTAR = pygame.font.Font(self.font, 35).render('VOLTAR ', True, (255, 140, 0))
 
+        self.rect_VOLTAR = self.VOLTAR.get_rect()
+        self.rect_VOLTAR.x = 50
+        self.rect_VOLTAR.y = 50
 
     def desenha(self, window):
         window.fill((0, 0, 255))
@@ -252,15 +259,23 @@ class TelasCredito:
         window.blit(self.GRUPO, (50, 370))
         window.blit(self.DANIEL, (120, 460))
         window.blit(self.DIEGO, (120, 560))
+        window.blit(self.VOLTAR, (50, 50))
 
         pygame.display.update()
 
-
+    
     def atualiza(self):
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        mouse_point = pygame.Rect(mouse_x, mouse_y, 1, 1)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return 'exit'
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                if mouse_point.colliderect(self.rect_VOLTAR):
+                    return TelaMenu(self.largura_janela, self.altura_janela)
         return self
+    
+
     
 
 class TelaScore:
