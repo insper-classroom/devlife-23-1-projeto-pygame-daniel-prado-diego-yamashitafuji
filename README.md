@@ -40,7 +40,15 @@ sons do jogo: https://www.sounds-resource.com/snes/superbomberman/sound/35684/
 
 imagens e sprites: https://www.spriters-resource.com/snes/sbomber/
 
-imagem super bomberman: https://bomberman.fandom.com/wiki/Super_Bomberman
+imagem super bomberman(título): https://bomberman.fandom.com/wiki/Super_Bomberman
+
+imagens poderes: https://steamcommunity.com/sharedfiles/filedetails/?l=brazilian&id=891450617
+
+imagem crédito: https://www.techtudo.com.br/noticias/2014/10/bomberman-conheca-os-melhores-games-da-franquia.ghtml
+
+
+
+
 
 
 
