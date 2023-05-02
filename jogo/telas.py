@@ -98,8 +98,8 @@ class TelaJogo:
         self.altura_mapa = (self.n_blocos_internos[1] * 2 + 3) * self.sprite_size[1]
         self.mapa = Mapa(self)
         self.gera_paredes_inquebraveis()
-        self.gera_powerups()
         self.gera_paredes_quebraveis()  # Caso a quantidade exeda o limite, o jogo quebra
+        self.gera_powerups()
         self.gera_jogadores()
         
 
@@ -126,34 +126,6 @@ class TelaJogo:
                 x = x_unidade * self.sprite_size[0]
                 self.blocos.add(UnbreakBlock(self, x, y))
 
-    def gera_powerups(self):
-        for a in range(4):
-            if a == 0:
-                tipo = 'estoque'
-                quantidade = self.n_estoque_pu
-            elif a == 1:
-                tipo = 'explosao'
-                quantidade = self.n_explosao_pu
-            elif a == 2:
-                tipo = 'velocidade'
-                quantidade = self.n_velocidade_pu
-            elif a == 3:
-                tipo = 'chute'
-                quantidade = self.n_chute_pu
-            for i in range(quantidade):
-                bool = True
-                while bool:
-                    x_unidade = random.randint(1, 1 + 2 * self.n_blocos_internos[0])
-                    y_unidade = random.randint(1, 1 + 2 * self.n_blocos_internos[1])
-
-                    x = x_unidade * self.sprite_size[0]
-                    y = y_unidade * self.sprite_size[1]
-
-                    powerup = PowerUp(self, x, y, tipo)
-
-                    if len(pygame.sprite.spritecollide(powerup, self.powerups, False)) == 0 and len(pygame.sprite.spritecollide(powerup, self.blocos, False)) == 0:
-                        bool = False
-                self.powerups.add(powerup)
 
     def gera_paredes_quebraveis(self):
         for i in range(self.n_blocos_quebraveis):
@@ -179,7 +151,36 @@ class TelaJogo:
                     bool = False
             self.blocos.add(bloco)
 
+    def gera_powerups(self):
+        for a in range(4):
+            if a == 0:
+                tipo = 'estoque'
+                quantidade = self.n_estoque_pu
+            elif a == 1:
+                tipo = 'explosao'
+                quantidade = self.n_explosao_pu
+            elif a == 2:
+                tipo = 'velocidade'
+                quantidade = self.n_velocidade_pu
+            elif a == 3:
+                tipo = 'chute'
+                quantidade = self.n_chute_pu
+            for i in range(quantidade):
+                bool = True
+                while bool:
+                    x_unidade = random.randint(1, 1 + 2 * self.n_blocos_internos[0])
+                    y_unidade = random.randint(1, 1 + 2 * self.n_blocos_internos[1])
 
+                    x = x_unidade * self.sprite_size[0]
+                    y = y_unidade * self.sprite_size[1]
+
+                    powerup = PowerUp(self, x, y, tipo)
+
+                    if len(pygame.sprite.spritecollide(powerup, self.powerups, False)) == 0 and len(pygame.sprite.spritecollide(powerup, self.blocos, False)) > 0:
+                        if pygame.sprite.spritecollide(powerup, self.blocos, False)[0].eh_quebravel:
+                            bool = False
+                self.powerups.add(powerup)
+        
     def gera_jogadores(self):
         self.jogador_um = PlayerWhite(self, self.sprite_size[0], self.sprite_size[1])
         self.jogadores.add(self.jogador_um)
@@ -225,6 +226,7 @@ class TelaJogo:
                 elif event.key == pygame.K_d and self.jogador_um.estado[0] != 'morte':
                     self.jogador_um.estado = ['leste', True]
                 elif event.key == pygame.K_SPACE and self.jogador_um.estado[0] != 'morte':
+                    self.jogador_um.flag_bomba = False
                     self.jogador_um.cria_bomba(self)
                 # Jogador 2
                 elif event.key == pygame.K_UP and self.jogador_dois.estado[0] != 'morte':
@@ -236,6 +238,7 @@ class TelaJogo:
                 elif event.key == pygame.K_RIGHT and self.jogador_dois.estado[0] != 'morte':
                     self.jogador_dois.estado = ['leste', True]
                 elif event.key == pygame.K_RCTRL and self.jogador_dois.estado[0] != 'morte':
+                    self.jogador_dois.flag_bomba = False
                     self.jogador_dois.cria_bomba(self)
 
             elif event.type == pygame.KEYUP:

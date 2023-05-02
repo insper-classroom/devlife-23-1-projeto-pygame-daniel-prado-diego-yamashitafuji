@@ -90,6 +90,7 @@ class Player(pygame.sprite.Sprite):
         self.tick_anterior = 0
         self.vel = [0, 0]
         # Parametros de animacao
+        self.flag_bomba = False
         self.flag_morte = True
         self.flag_andar = True
         self.contador = 0
@@ -167,6 +168,7 @@ class Player(pygame.sprite.Sprite):
         # Colisao com explosao
         if len(pygame.sprite.spritecollide(self, estado_jogo.explosoes, False)) > 0:
             self.estado = ['morte', False]
+        # Colisao com powerup
         if len(pygame.sprite.spritecollide(self, estado_jogo.powerups, False)) > 0:
             powerup_colidido = pygame.sprite.spritecollide(self, estado_jogo.powerups, False)[0]
             if powerup_colidido.tipo == 'estoque':
@@ -181,6 +183,13 @@ class Player(pygame.sprite.Sprite):
             elif powerup_colidido.tipo == 'chute' and not self.chuta:
                 self.chuta = True
                 estado_jogo.powerups.remove(powerup_colidido)
+        # Colisao com bomba
+        if len(pygame.sprite.spritecollide(self, estado_jogo.bombas, False)) > 0 and self.flag_bomba:
+            if self.chuta:
+                bomba_colidida = pygame.sprite.spritecollide(self, estado_jogo.bombas, False)[0]
+                bomba_colidida.movimenta(self.estado[0])
+        elif len(pygame.sprite.spritecollide(self, estado_jogo.bombas, False)) == 0 and not self.flag_bomba:
+            self.flag_bomba = True
 
         # Atualiza a imagem do jogador
         if self.estado[0] == 'morte' and self.flag_morte:
@@ -321,11 +330,32 @@ class Bomb(pygame.sprite.Sprite):
         self.rect.y = y
         # Inicializa parametros da bomba
         self.tick_inicial = pygame.time.get_ticks()
+        self.vel = [0,0]
+        self.tick_anterior = 0
         self.alcance = alcance
         self.player = player
-
+    
+    def movimenta(self, direcao):
+        if direcao == 'norte':
+            self.vel = [0, -300]
+        elif direcao == 'leste':
+            self.vel = [300, 0]
+        elif direcao == 'sul':
+            self.vel = [0, 300]
+        elif direcao == 'oeste':
+            self.vel = [-300, 0]
 
     def update(self, estado_jogo):
+        # Atualiza posicao da bomba
+        ultima_pos = [self.rect.x, self.rect.y]
+        frame_time = estado_jogo.tick_atual - self.tick_anterior
+        self.tick_anterior = estado_jogo.tick_atual
+        self.rect.x += self.vel[0] * frame_time / 1000
+        self.rect.y += self.vel[1] * frame_time / 1000
+        # Colisao com blocos
+        if len(pygame.sprite.spritecollide(self, estado_jogo.blocos, False)) > 0 or len(pygame.sprite.spritecollide(self, estado_jogo.jogadores, False)) > 0:
+            self.rect.x, self.rect.y = ultima_pos
+            self.vel = [0, 0]
         if estado_jogo.tick_atual > self.tick_inicial + 500 * self.fase_imagem:
             self.fase_imagem += 1
             self.ind_imagem = self.fase_imagem % 3
@@ -341,7 +371,9 @@ class Bomb(pygame.sprite.Sprite):
         elif self.player == 'black':
             estado_jogo.jogador_dois.estoque_bomba += 1
         # Constroe a explosao
-        tick_inicial = pygame.time.get_ticks()
+        tick_inicial = estado_jogo.tick_atual
+        pos_x_arredondado = round(self.rect.x / self.width) * self.width
+        pos_y_arredondado = round(self.rect.y / self.height) * self.height
         for a in range(5):
             i = 0
             colide_bloco = False
@@ -352,15 +384,15 @@ class Bomb(pygame.sprite.Sprite):
                 else:
                     fase = 1
                 if a == 0:
-                    explosao = Explosao(estado_jogo, self.rect.x, self.rect.y, 0, 'leste', tick_inicial)  # Desenha o centro da explosao
+                    explosao = Explosao(estado_jogo, pos_x_arredondado, pos_y_arredondado, 0, 'leste', tick_inicial)  # Desenha o centro da explosao
                 if a == 1:
-                    explosao = Explosao(estado_jogo, self.rect.x + self.width * i, self.rect.y, fase, 'leste', tick_inicial)  # ... o leste
+                    explosao = Explosao(estado_jogo, pos_x_arredondado + self.width * i, pos_y_arredondado, fase, 'leste', tick_inicial)  # ... o leste
                 elif a == 2:
-                    explosao = Explosao(estado_jogo, self.rect.x , self.rect.y - self.height * i, fase, 'norte', tick_inicial)  # ... o norte
+                    explosao = Explosao(estado_jogo, pos_x_arredondado , pos_y_arredondado - self.height * i, fase, 'norte', tick_inicial)  # ... o norte
                 elif a == 3:
-                    explosao = Explosao(estado_jogo, self.rect.x - self.width * i, self.rect.y, fase, 'oeste', tick_inicial)  # ... o oeste
+                    explosao = Explosao(estado_jogo, pos_x_arredondado - self.width * i, pos_y_arredondado, fase, 'oeste', tick_inicial)  # ... o oeste
                 elif a == 4:
-                    explosao = Explosao(estado_jogo, self.rect.x , self.rect.y + self.height * i, fase, 'sul', tick_inicial)  # ... o sul
+                    explosao = Explosao(estado_jogo, pos_x_arredondado , pos_y_arredondado + self.height * i, fase, 'sul', tick_inicial)  # ... o sul
 
                 if len(pygame.sprite.spritecollide(explosao, estado_jogo.blocos, False)) > 0:
                     colide_bloco = True
