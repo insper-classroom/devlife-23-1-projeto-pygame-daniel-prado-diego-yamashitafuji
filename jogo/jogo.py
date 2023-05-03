@@ -1,6 +1,5 @@
 import pygame
 from telas import *
-from telajogo import TelaJogo
 
 
 class Jogo:
@@ -18,7 +17,7 @@ class Jogo:
 
         rodando = True
         while rodando:
-            tela_atual = tela_atual.atualiza()
+            tela_atual = tela_atual.atualiza(self)
             if tela_atual == 'exit':
                 rodando = False
                 pygame.quit()
