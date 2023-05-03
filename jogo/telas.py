@@ -150,24 +150,24 @@ class TelaOpções:  # Tela de selecao da partida (melhor de ...)
 
 
         self.rect_um = self.um.get_rect()
-        self.rect_um.x = largura_janela/2
+        self.rect_um.x = 370
         self.rect_um.y = 360
 
         self.rect_tres = self.um.get_rect()
-        self.rect_tres.x = largura_janela/2
+        self.rect_tres.x = 370
         self.rect_tres.y = 460
 
         self.rect_cinco = self.um.get_rect()
-        self.rect_cinco.x = largura_janela/2
+        self.rect_cinco.x = 370
         self.rect_cinco.y = 560
 
 
     def desenha(self, window):
         window.fill((0, 0, 255))
         window.blit(self.TITLE, (self.TITLE_x, 20))
-        window.blit(self.um, ((self.largura_janela - self.um.get_width()) / 2, 360))
-        window.blit(self.tres, ((self.largura_janela - self.tres.get_width()) / 2, 460))
-        window.blit(self.cinco, ((self.largura_janela - self.cinco.get_width()) / 2, 560))
+        window.blit(self.um, (370, 360))
+        window.blit(self.tres, (370, 460))
+        window.blit(self.cinco, (370, 560))
 
         pygame.display.update()
 

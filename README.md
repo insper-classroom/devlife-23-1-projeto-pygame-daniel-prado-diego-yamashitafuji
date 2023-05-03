@@ -21,8 +21,10 @@
 2. Abra o prompt de comando (no Windows) ou o terminal (no Mac ou Linux)
 3. Use o comando "pip install pygame" para instalar a biblioteca Pygame
 4. Depois de instalar a biblioteca Pygame, baixe o arquivo do jogo e extraia os arquivos para uma pasta no seu computador.
-5. Abra o prompt de comando ou o terminal e navegue até a pasta que contém os arquivos do jogo.
-Digite o comando "python jogo_bomberman.py"
+5. Abra o prompt de comando ou o terminal e navegue até a pasta que contém os arquivos do jogo. Digite o comando
+```bash
+python jogo.py
+```
 
 # ***Imagens***
 
