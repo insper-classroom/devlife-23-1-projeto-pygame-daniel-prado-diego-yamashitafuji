@@ -471,6 +471,7 @@ class TelaScore:
         self.font = 'jogo/img/fonte.ttf'
         self.PLAYER1 = pygame.font.Font(self.font, 50).render('PLAYER 1: ', True, (255, 140, 0))
         self.PLAYER2 = pygame.font.Font(self.font, 50).render('PLAYER 2: ', True, (255, 140, 0))
+        self.ENTER = pygame.font.Font(self.font, 30).render('ENTER TO CONTINUE', True, (255, 140, 0))
 
 
     def desenha(self, window):
@@ -486,6 +487,7 @@ class TelaScore:
 
         window.blit(self.PLAYER1, (200,30))
         window.blit(self.PLAYER2, (200,100))
+        window.blit(self.ENTER, (720,660))
 
         pygame.display.update()
 
