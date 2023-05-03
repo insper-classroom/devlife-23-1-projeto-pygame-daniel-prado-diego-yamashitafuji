@@ -133,6 +133,10 @@ nav ul li {
  
 }
 
+.avaliação h3{
+  font-size: 35px;
+}
+
 .avaliação figure{
   margin: 20px;
 }
@@ -249,9 +253,8 @@ a {
 
 }
 
+
 footer p {
-  /* color: #E8D030; */
   text-align: center;
   
-
 }
