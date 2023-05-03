@@ -84,6 +84,7 @@ nav ul li {
   h3 {
     font-family: 'fontejogo', cursive;
     margin: 20px;
+    font-size: 30px;
   }
 
   ul {
@@ -252,4 +253,5 @@ footer p {
   /* color: #E8D030; */
   text-align: center;
   
+
 }
