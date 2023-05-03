@@ -431,7 +431,7 @@ class TelaVicWhite:  # Tela de vitoria do player branco
             if event.type == pygame.QUIT:
                 return 'exit'
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_KP_ENTER:
+                if event.key == pygame.K_RETURN:
                     jogo.melhor_de_ = 0
                     jogo.vitorias_branco = 0
                     jogo.vitorias_preto = 0
@@ -459,7 +459,7 @@ class TelaVicBlack:  # Tela de vitoria do player pretos
             if event.type == pygame.QUIT:
                 return 'exit'
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_KP_ENTER:
+                if event.key == pygame.K_RETURN:
                     jogo.melhor_de_ = 0
                     jogo.vitorias_branco = 0
                     jogo.vitorias_preto = 0
