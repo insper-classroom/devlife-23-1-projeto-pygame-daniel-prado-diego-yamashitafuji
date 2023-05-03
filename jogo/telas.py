@@ -417,12 +417,12 @@ class TelaVicWhite:  # Tela de vitoria do player branco
         self.largura_janela = largura_janela
         self.altura_janela = altura_janela
 
-        self.VICWHITE = pygame.image.load('jogo/img/vic_white.jpg')
+        self.VICWHITE = pygame.transform.scale(pygame.image.load('jogo/img/vic_white.jpg'), (800, 600))
 
 
     def desenha(self, window):
         window.fill((0, 0, 0))
-        window.blit(self.VICWHITE, (340, 100))
+        window.blit(self.VICWHITE, ((self.largura_janela - 800) / 2, (self.altura_janela - 600) / 2))
         pygame.display.update()
 
 
@@ -430,6 +430,12 @@ class TelaVicWhite:  # Tela de vitoria do player branco
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return 'exit'
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_KP_ENTER:
+                    jogo.melhor_de_ = 0
+                    jogo.vitorias_branco = 0
+                    jogo.vitorias_preto = 0
+                    return TelaMenu(self.largura_janela, self.altura_janela)
         return self
             
 
@@ -438,19 +444,26 @@ class TelaVicBlack:  # Tela de vitoria do player pretos
         self.largura_janela = largura_janela
         self.altura_janela = altura_janela
 
-        self.VICBLACK = pygame.image.load('jogo/img/vic_black.jpg')
+        self.VICBLACK = pygame.transform.scale(pygame.image.load('jogo/img/vic_black.jpg'), (800, 600))
 
 
     def desenha(self, window):
         window.fill((0, 0, 0))
-        window.blit(self.VICBLACK, (340, 100))
+        window.blit(self.VICBLACK, ((self.largura_janela - 800) / 2, (self.altura_janela - 600) / 2))
         pygame.display.update()
 
 
     def atualiza(self, jogo):
+        # Reinicia o jogo
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return 'exit'
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_KP_ENTER:
+                    jogo.melhor_de_ = 0
+                    jogo.vitorias_branco = 0
+                    jogo.vitorias_preto = 0
+                    return TelaMenu(self.largura_janela, self.altura_janela)
         return self
     
 
@@ -495,7 +508,17 @@ class TelaScore:
     def atualiza(self, jogo):
         self.PLAYER_1_TROFEU = jogo.vitorias_branco
         self.PLAYER_2_trofeu = jogo.vitorias_preto
+        if jogo.vitorias_branco == jogo.melhor_de_ / 2 + 0.5:
+            tela_atual = TelaVicWhite(self.largura_janela, self.altura_janela)
+        elif jogo.vitorias_preto == jogo.melhor_de_ / 2 + 0.5:
+            tela_atual = TelaVicBlack(self.largura_janela, self.altura_janela)
+        else:
+            tela_atual = TelaJogo(self.largura_janela, self.altura_janela)
         for event in pygame.event.get():
+
             if event.type == pygame.QUIT:
                 return 'exit'
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_KP_ENTER:
+                    return tela_atual
         return self
