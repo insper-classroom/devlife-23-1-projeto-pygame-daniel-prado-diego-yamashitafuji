@@ -519,6 +519,6 @@ class TelaScore:
             if event.type == pygame.QUIT:
                 return 'exit'
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_KP_ENTER:
+                if event.key == pygame.K_RETURN:
                     return tela_atual
         return self
